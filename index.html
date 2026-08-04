@@ -359,7 +359,7 @@
    ============================================================ */
 
 /* ===== BACKEND CONFIG ===== */
-const API_URL = 'https://script.google.com/a/macros/nathabit.in/s/AKfycbwH9-3FJQqVV19jPLS9TMLHoQc5n4k_P1UTIaNeslaqB_QS5PgqBPzziZfTWC_-9bFv/exec';
+const API_URL = 'https://script.google.com/a/macros/nathabit.in/s/AKfycbwuHl3AnoYlMLWUT6IB78sG77fEI0SwWckZIAT39AMloVC1npYqf9mKnxhACTrKfR6-/exec';
 const LIVE = !!API_URL;
 
 const ROLES=['ecom','creative','manager','admin'];
@@ -944,7 +944,7 @@ function doExtension(id){const r=findReq(id);
 function askPrioritize(){const ids=[...selected];if(!ids.length)return;
   ids.forEach(id=>{const r=findReq(id);r.prioritizeReq=true;r.prioritizeBy=currentUser;log(r,currentUser,'esc','Asked manager to prioritise');});
   const mgr=firstOf('manager');notify(mgr.id,currentUser,ids[0],`<b>${fname(currentUser)}</b> asked you to prioritise <b>${ids.length} task${ids.length>1?'s':''}</b>`,'prioritize');
-  const n=ids.length;selected.clear();DB.save(r);render();
+  const n=ids.length;selected.clear();ids.forEach(id=>DB.save(findReq(id)));render();
   toast('Sent to manager','Asked '+fname(mgr.id)+' to prioritise '+n+' task'+(n>1?'s':'')+'.',{label:'Ping '+fname(mgr.id),href:waLink(mgr.id,`Juggling ${n} tasks — can you set priority order? IDs: ${ids.join(', ')}`)});}
 
 function approveExt(id){const r=findReq(id);
@@ -1085,7 +1085,7 @@ function submitRequest(editId){
     activity:[{ts:iso(today),actor:g('fBy'),type:'created',note:'Raised the request'}]};
   REQUESTS.unshift(nr);
   notify(firstOf('creative').id,g('fBy'),nr.id,`New request from <b>${fname(g('fBy'))}</b>: <b>${esc(nr.request.slice(0,30))}</b>`,'created');
-  DB.save(r);closeModal();render();toast('Request sent','It\'s in the creative Pending queue.',{label:'Ping creative team',href:waLink(firstOf('creative').id,`New request "${nr.request.slice(0,40)}" (${nr.id}) — needed by ${fmtDate(nr.requiredBy)}. Details in the tool.`)});
+  DB.save(nr);closeModal();render();toast('Request sent','It\'s in the creative Pending queue.',{label:'Ping creative team',href:waLink(firstOf('creative').id,`New request "${nr.request.slice(0,40)}" (${nr.id}) — needed by ${fmtDate(nr.requiredBy)}. Details in the tool.`)});
 }
 
 /* =================== SHELL =================== */
