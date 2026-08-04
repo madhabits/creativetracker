@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NatHabit · Creative Requests</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EFECE1; --bg2:#E6E2D4; --surface:#FCFBF6; --surface2:#F2F0E5;
+    --border:#DCD7C7; --border-soft:#E6E2D5;
+    --text:#213029; --dim:#5E6B60; --mute:#8B9188;
+    --green:#2E7D46; --green-d:#215B34; --green-soft:rgba(46,125,70,.12);
+    --gold:#B8871F; --gold-soft:rgba(184,135,31,.15);
+    --sage:#3E9E6A; --sage-soft:rgba(62,158,106,.14);
+    --blue:#3E7CB1; --blue-soft:rgba(62,124,177,.14);
+    --coral:#C67B3A; --coral-soft:rgba(198,123,58,.15);
+    --red:#C0453E; --red-soft:rgba(192,69,62,.13);
+    --purple:#9C4E70; --purple-soft:rgba(156,78,112,.13);
+    --wa:#25D366;
+    --shadow:0 14px 32px rgba(45,55,40,.14);
+    --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(1100px 520px at 88% -8%, rgba(46,125,70,.07), transparent 60%),
+      radial-gradient(900px 480px at 4% 108%, rgba(184,135,31,.06), transparent 60%),
+      var(--bg);
+    color:var(--text); font-family:Inter,system-ui,sans-serif; font-size:14px; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:Sora,sans-serif;margin:0;font-weight:600;letter-spacing:-.01em}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  button{font-family:inherit;cursor:pointer}
+  a{color:var(--gold);text-decoration:none}
+
+  header.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:16px;
+    padding:12px 22px;background:rgba(246,244,236,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-soft)}
+  .brand{display:flex;align-items:center;gap:11px;min-width:0}
+  .leaf{width:32px;height:32px;border-radius:9px;flex:none;background:linear-gradient(150deg,#2E7D46,#215B34);
+    border:1px solid rgba(33,91,52,.4);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+  .leaf svg{width:18px;height:18px}
+  .brand .name{font-family:Sora;font-weight:700;font-size:15px;letter-spacing:.2px}
+  .brand .sub{font-size:11px;color:var(--mute);letter-spacing:.3px}
+  .grow{flex:1}
+  .preview{display:flex;align-items:center;gap:10px}
+  .preview .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--mute)}
+  .seg{display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:3px}
+  .seg button{border:0;background:transparent;color:var(--dim);padding:7px 13px;border-radius:8px;
+    font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:7px;transition:.16s}
+  .seg button .dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.55}
+  .seg button.on{background:var(--surface2);color:var(--text)}
+  .seg button.on.r-ecom{color:var(--blue)} .seg button.on.r-creative{color:var(--gold)}
+  .seg button.on.r-manager{color:var(--purple)} .seg button.on.r-admin{color:var(--text)}
+  .seg button:hover:not(.on){color:var(--text)}
+  .iconbtn{position:relative;width:38px;height:38px;border-radius:10px;background:var(--bg2);
+    border:1px solid var(--border);color:var(--dim);display:grid;place-items:center;transition:.16s}
+  .iconbtn:hover{color:var(--text);border-color:#33436b}
+  .iconbtn svg{width:18px;height:18px}
+  .badge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;padding:0 4px;background:var(--gold);
+    color:#241704;font-size:10.5px;font-weight:700;border-radius:9px;display:grid;place-items:center;font-family:Sora}
+  .whoami{display:flex;align-items:center;gap:9px;padding:5px 12px 5px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:22px}
+  .whoami .av{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:Sora;font-weight:700;font-size:12px;color:#0d1424}
+  .whoami .meta b{font-size:12.5px;font-weight:600} .whoami .meta span{display:block;font-size:10.5px;color:var(--mute);text-transform:capitalize}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:26px 22px 90px}
+  .pagehead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .pagehead .eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+  .pagehead h1{font-size:23px}
+  .pagehead p.lede{color:var(--dim);margin:6px 0 0;font-size:13.5px;max-width:600px}
+
+  .btn{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:10px 15px;border-radius:10px;
+    font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:8px;transition:.15s}
+  .btn:hover{border-color:#3a4a72;background:var(--surface2)} .btn svg{width:16px;height:16px}
+  .btn.primary{background:var(--green);border-color:var(--green);color:#fff} .btn.primary:hover{background:var(--green-d);border-color:var(--green-d)}
+  .btn.ghost{background:transparent} .btn.sm{padding:7px 11px;font-size:12px;border-radius:9px}
+  .btn.wa{background:var(--wa);border-color:var(--wa);color:#04270f} .btn.wa:hover{filter:brightness(1.05);background:var(--wa)}
+  .btn.danger{color:var(--red);border-color:rgba(232,101,107,.3)} .btn.danger:hover{background:var(--red-soft);border-color:var(--red)}
+  .btn.good{color:var(--sage);border-color:rgba(111,191,156,.32)} .btn.good:hover{background:var(--sage-soft);border-color:var(--sage)}
+  .btn.warn{color:var(--coral);border-color:rgba(240,137,78,.3)} .btn.warn:hover{background:var(--coral-soft);border-color:var(--coral)}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:12px;margin-bottom:22px}
+  .stat{background:var(--surface);border:1px solid var(--border-soft);border-radius:12px;padding:14px 16px}
+  .stat .n{font-family:Sora;font-weight:700;font-size:26px;line-height:1}
+  .stat .k{font-size:11px;color:var(--dim);margin-top:7px;text-transform:uppercase;letter-spacing:.07em}
+  .stat.b .n{color:var(--blue)} .stat.g .n{color:var(--gold)} .stat.c .n{color:var(--coral)}
+  .stat.s .n{color:var(--sage)} .stat.p .n{color:var(--purple)}
+
+  .section-t{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--mute);margin:26px 0 12px;display:flex;align-items:center;gap:9px}
+  .section-t .ct{background:var(--surface2);color:var(--dim);border-radius:20px;padding:1px 8px;font-size:11px;letter-spacing:.02em}
+  .section-t:first-child{margin-top:0}
+
+  /* tabs */
+  .tabs{display:flex;margin-bottom:20px;border-bottom:1px solid var(--border-soft)}
+  .tab{border:0;background:transparent;color:var(--dim);padding:11px 2px;margin-right:22px;font-weight:600;font-size:13.5px;position:relative}
+  .tab.on{color:var(--text)}
+  .tab.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--green);border-radius:2px}
+  .tab .cnt{margin-left:7px;background:var(--surface2);color:var(--dim);border-radius:20px;padding:1px 8px;font-size:11px}
+  .tab.on .cnt{background:var(--green-soft);color:var(--green)}
+
+  /* filters */
+  .filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .fchip{border:1px solid var(--border);background:var(--surface);color:var(--dim);padding:6px 12px;border-radius:20px;font-size:12px;font-weight:600}
+  .fchip.on{background:var(--surface2);color:var(--text);border-color:#3a4a72}
+
+  /* chips */
+  .chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;border:1px solid transparent;white-space:nowrap}
+  .chip .d{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .st-pending{color:var(--blue);background:var(--blue-soft);border-color:rgba(107,168,240,.28)}
+  .st-ongoing{color:var(--gold);background:var(--gold-soft);border-color:rgba(184,135,31,.3)}
+  .st-pending_approval{color:var(--purple);background:var(--purple-soft);border-color:rgba(180,140,232,.3)}
+  .st-completed{color:var(--sage);background:var(--sage-soft);border-color:rgba(111,191,156,.3)}
+  .st-declined{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
+  .pr-high{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
+  .pr-med{color:var(--gold);background:var(--gold-soft);border-color:rgba(184,135,31,.3)}
+  .pr-low{color:var(--dim);background:rgba(147,160,189,.1);border-color:rgba(147,160,189,.22)}
+  .pr-none{color:var(--mute);background:rgba(147,160,189,.08);border-color:rgba(147,160,189,.18)}
+  .chip.type{color:var(--dim);background:var(--bg2);border-color:var(--border)}
+  .chip.flag{color:var(--coral);background:var(--coral-soft);border-color:rgba(240,137,78,.3)}
+  .chip.flagp{color:var(--purple);background:var(--purple-soft);border-color:rgba(180,140,232,.3)}
+
+  /* table */
+  .tablewrap{background:var(--surface);border:1px solid var(--border-soft);border-radius:12px;overflow:auto}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:720px}
+  th{text-align:left;padding:11px 14px;color:var(--mute);font-weight:600;font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.08em;background:var(--bg2);border-bottom:1px solid var(--border-soft);white-space:nowrap}
+  td{padding:11px 14px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+  .expandrow{cursor:pointer;transition:background .12s}
+  .expandrow:hover{background:var(--surface2)}
+  .expandrow.attn{box-shadow:inset 3px 0 0 var(--purple)}
+  .chev{transition:.2s;color:var(--mute);display:inline-block}
+  .expandrow.open .chev{transform:rotate(90deg)}
+  .miniav{width:19px;height:19px;border-radius:50%;display:inline-grid;place-items:center;font-size:9.5px;font-weight:700;font-family:Sora;color:#0d1424;vertical-align:middle;margin-right:6px}
+  .late{color:var(--red)}
+  .detailcell{padding:0!important;background:var(--bg2)}
+  .detailcell .inner{padding:17px 18px}
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px 22px;margin-bottom:14px}
+  .dg .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute)}
+  .dg .v{font-size:13px;margin-top:3px}
+  .brief{font-size:13px;color:var(--dim);line-height:1.6;padding-top:12px;border-top:1px solid var(--border-soft)}
+  .brief b{color:var(--text)}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px;padding-top:14px;border-top:1px solid var(--border-soft)}
+
+  /* card (creative) */
+  .card{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:16px 17px;margin-bottom:14px;position:relative}
+  .card.sel{border-color:var(--green);box-shadow:0 0 0 1px rgba(46,125,70,.2)}
+  .card.attn{border-color:rgba(180,140,232,.4)}
+  .card-h{display:flex;gap:12px;align-items:flex-start}
+  .card-h .tt{flex:1;min-width:0}
+  .rid{font-size:11px;color:var(--mute);letter-spacing:.03em}
+  .card-h h3{font-size:15.5px;margin-top:2px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:14px 22px;margin:14px 0 0;padding-top:13px;border-top:1px solid var(--border-soft)}
+  .m .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute)}
+  .m .v{font-size:13px;margin-top:3px;display:flex;align-items:center;gap:2px}
+  .body-txt{margin-top:13px;color:var(--dim);font-size:13px;line-height:1.6}
+  .body-txt b{color:var(--text)}
+
+  /* trail */
+  details.more{margin-top:12px;border-top:1px solid var(--border-soft);padding-top:11px}
+  details.more>summary{list-style:none;cursor:pointer;color:var(--dim);font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;user-select:none}
+  details.more>summary::-webkit-details-marker{display:none}
+  details.more>summary .cv{transition:.2s} details.more[open]>summary .cv{transform:rotate(90deg)}
+  .trail{margin-top:13px;padding-left:4px}
+  .trail .ti{display:flex;gap:11px;position:relative;padding-bottom:13px}
+  .trail .ti:last-child{padding-bottom:0}
+  .trail .rail{position:relative;flex:none;width:11px;display:flex;justify-content:center}
+  .trail .rail::before{content:"";position:absolute;top:14px;bottom:-4px;width:2px;background:var(--border)}
+  .trail .ti:last-child .rail::before{display:none}
+  .trail .node{width:11px;height:11px;border-radius:50%;margin-top:3px;background:var(--surface);border:2px solid var(--dim);z-index:1}
+  .trail .ti.acc .node{border-color:var(--gold)} .trail .ti.esc .node{border-color:var(--coral)}
+  .trail .ti.done .node{border-color:var(--sage);background:var(--sage)} .trail .ti.q .node{border-color:var(--purple)}
+  .trail .tc .l1{font-size:12.5px} .trail .tc .l1 b{font-weight:600}
+  .trail .tc .l2{font-size:11px;color:var(--mute);margin-top:2px}
+
+  /* query */
+  .qthread{margin-top:13px;background:var(--bg2);border:1px solid var(--border-soft);border-radius:11px;padding:12px 13px}
+  .qthread .qh{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--purple);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .qmsg{font-size:12.5px;margin-bottom:8px} .qmsg .who{color:var(--dim);font-weight:600}
+  .qmsg.ans{color:var(--sage)} .qmsg.open{color:var(--gold)}
+
+  /* request-box (manager) */
+  .reqbox{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:15px 16px;margin-bottom:13px}
+  .reqbox.ext{border-color:rgba(240,137,78,.32)} .reqbox.pre{border-color:rgba(107,168,240,.32)} .reqbox.prio{border-color:rgba(180,140,232,.32)}
+  .reqbox .rh{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+  .reqbox .rh .tag{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:6px}
+  .reqbox.ext .tag{background:var(--coral-soft);color:var(--coral)} .reqbox.pre .tag{background:var(--blue-soft);color:var(--blue)} .reqbox.prio .tag{background:var(--purple-soft);color:var(--purple)}
+  .reqbox .rh b{font-size:14px}
+  .reqbox .line{font-size:12.5px;color:var(--dim);margin:3px 0}
+  .reqbox .line b{color:var(--text)}
+  .datechg{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono';font-size:12.5px;margin:4px 0}
+  .datechg .old{color:var(--mute);text-decoration:line-through} .datechg .new{color:var(--coral);font-weight:600}
+  .datechg.pre .new{color:var(--blue)}
+  .prioline{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--border-soft)}
+  .prioline .pl{font-size:13px} .prioline .pl .mono{color:var(--mute);font-size:11px}
+  .prioset{display:flex;gap:6px}
+
+  /* team */
+  .person{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--border-soft)}
+  .person:last-child{border-bottom:0}
+  .person .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:Sora;font-weight:700;color:#0d1424}
+  .person .pn{flex:1} .person .pn b{font-size:13.5px} .person .pn span{display:block;font-size:11.5px;color:var(--mute)}
+  .rolechip{font-size:10.5px;font-weight:600;text-transform:capitalize;padding:3px 9px;border-radius:20px}
+  .rc-ecom{color:var(--blue);background:var(--blue-soft)} .rc-creative{color:var(--gold);background:var(--gold-soft)}
+  .rc-manager{color:var(--purple);background:var(--purple-soft)} .rc-admin{color:var(--dim);background:rgba(147,160,189,.12)}
+
+  .empty{text-align:center;padding:44px 20px;color:var(--mute)}
+  .empty svg{width:32px;height:32px;opacity:.5;margin-bottom:10px}
+  .empty h4{color:var(--dim);font-size:15px;margin-bottom:4px} .empty p{font-size:13px;margin:0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}}
+
+  /* modal */
+  .scrim{position:fixed;inset:0;background:rgba(40,46,34,.42);backdrop-filter:blur(3px);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+  .scrim.on{display:flex}
+  .modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;box-shadow:var(--shadow);animation:pop .18s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+  .modal-h{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 14px;border-bottom:1px solid var(--border-soft)}
+  .modal-h h3{font-size:16px}
+  .modal-b{padding:18px 20px;max-height:64vh;overflow:auto}
+  .modal-f{padding:14px 20px 18px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border-soft)}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--dim)}
+  .field label .req{color:var(--gold)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  input,select,textarea{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;transition:.15s}
+  textarea{resize:vertical;min-height:70px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+  .hint{font-size:11.5px;color:var(--mute);margin-top:6px}
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+  .toggle-row .tl b{font-size:13px} .toggle-row .tl span{display:block;font-size:11.5px;color:var(--mute)}
+  .toggle{width:42px;height:24px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);position:relative;transition:.15s;flex:none}
+  .toggle.on{background:var(--green);border-color:var(--green)}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--dim);transition:.15s}
+  .toggle.on .knob{left:20px;background:#fff}
+
+  /* checkbox */
+  .ckbx{width:19px;height:19px;border-radius:5px;border:1.5px solid var(--border);background:var(--surface);display:inline-grid;place-items:center;flex:none;transition:.12s}
+  .ckbx.on{background:var(--green);border-color:var(--green)}
+  .ckbx svg{width:12px;height:12px;opacity:0;color:#fff} .ckbx.on svg{opacity:1}
+  .selbar{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;z-index:50;background:var(--surface2);
+    border:1px solid var(--border);border-radius:14px;padding:11px 12px 11px 16px;display:flex;align-items:center;gap:16px;box-shadow:var(--shadow);animation:tin .2s ease}
+  .selbar .sc{font-size:13px} .selbar .sc b{font-family:Sora}
+
+  /* drawer */
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:390px;max-width:92vw;background:var(--bg2);border-left:1px solid var(--border);
+    z-index:70;transform:translateX(102%);transition:transform .24s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--shadow)}
+  .drawer.on{transform:none}
+  .drawer-h{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 14px;border-bottom:1px solid var(--border-soft)}
+  .drawer-h h3{font-size:15px;display:flex;align-items:center;gap:9px}
+  .drawer-b{flex:1;overflow:auto;padding:8px 0}
+  .notif{display:flex;gap:11px;padding:13px 18px;border-bottom:1px solid var(--border-soft);position:relative}
+  .notif.unread{background:rgba(46,125,70,.06)}
+  .notif.unread::before{content:"";position:absolute;left:8px;top:19px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+  .notif .ni{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center}
+  .notif .nx{flex:1;min-width:0}
+  .notif .nx .txt{font-size:12.5px;line-height:1.5} .notif .nx .txt b{font-weight:600}
+  .notif .nx .tm{font-size:10.5px;color:var(--mute);margin-top:4px}
+
+  .toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:90;display:flex;flex-direction:column;gap:10px;align-items:center;width:min(94vw,440px)}
+  .toast{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:flex-start;animation:tin .22s ease}
+  @keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .toast .ti2{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;background:var(--sage-soft);color:var(--sage)}
+  .toast .tt2{flex:1} .toast .tt2 b{font-size:13px;font-weight:600} .toast .tt2 p{margin:2px 0 0;font-size:12px;color:var(--dim)}
+  .toast .tt2 .row{margin-top:9px;display:flex;gap:8px}
+
+  .demo-note{display:flex;gap:11px;align-items:flex-start;background:var(--gold-soft);border:1px solid rgba(184,135,31,.3);border-radius:12px;padding:12px 14px;margin-bottom:22px;font-size:12.5px;color:#6b5214}
+  .demo-note svg{width:17px;height:17px;flex:none;margin-top:1px;color:var(--gold)} .demo-note b{color:var(--green)}
+  .backend-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:12px;padding:16px 17px}
+  .backend-card .pill{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;background:var(--coral-soft);color:var(--coral);padding:4px 11px;border-radius:20px}
+  .backend-card .pill .d{width:7px;height:7px;border-radius:50%;background:currentColor}
+
+  .searchbar{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:9px 13px;margin-bottom:18px}
+  .searchbar svg{width:16px;height:16px;color:var(--mute);flex:none}
+  .searchbar input{border:0;background:transparent;padding:0;font-size:13.5px;box-shadow:none!important}
+  .searchbar input:focus{box-shadow:none!important;border:0}
+  .sclear{border:0;background:var(--surface2);color:var(--dim);width:22px;height:22px;border-radius:50%;font-size:15px;line-height:1;flex:none;display:grid;place-items:center}
+  .sclear:hover{color:var(--text)}
+  .mbanner{background:var(--red-soft);color:var(--red);border:1px solid rgba(192,69,62,.3);border-radius:9px;padding:9px 12px;margin-bottom:14px;font-size:12.5px;font-weight:600}
+
+  .pendwrap{display:flex;flex-wrap:wrap;gap:5px}
+  .pend{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .pend-none{font-size:11.5px;color:var(--sage);font-weight:600}
+  .p-pend{color:var(--blue);background:var(--blue-soft)}
+  .p-apr{color:var(--purple);background:var(--purple-soft)}
+  .p-ext{color:var(--coral);background:var(--coral-soft)}
+  .p-pre{color:var(--blue);background:var(--blue-soft)}
+  .p-prio{color:var(--purple);background:var(--purple-soft)}
+  .p-q{color:var(--purple);background:var(--purple-soft)}
+  .p-late{color:var(--red);background:var(--red-soft)}
+
+  .uploader{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--border);border-radius:11px;padding:14px 15px;cursor:pointer;background:var(--surface);transition:.15s}
+  .uploader:hover,.uploader.drag{border-color:var(--green);background:var(--green-soft)}
+  .uploader svg{width:22px;height:22px;color:var(--green);flex:none}
+  .uploader b{font-size:12.5px;display:block} .uploader span{font-size:11.5px;color:var(--mute)}
+  .filelist{margin-top:9px;display:flex;flex-direction:column;gap:6px}
+  .fitem{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border-soft);border-radius:9px;padding:7px 10px}
+  .fitem svg{width:16px;height:16px;color:var(--green);flex:none}
+  .fitem .fn{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fitem .fs{font-size:10.5px;color:var(--mute)}
+  .fitem .frm{border:0;background:transparent;color:var(--mute);font-size:16px;line-height:1;cursor:pointer}
+  .fitem .frm:hover{color:var(--red)}
+  .attchip{display:inline-block;font-size:11px;background:var(--surface2);border:1px solid var(--border-soft);border-radius:20px;padding:2px 9px;margin:2px 3px 0 0;color:var(--dim)}
+
+  .userpick{background:var(--bg2);border:1px solid var(--border);color:var(--text);border-radius:11px;padding:8px 30px 8px 12px;font-size:12.5px;font-weight:600;
+    appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none'><path d='M6 9l6 6 6-6' stroke='%235E6B60' stroke-width='2' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 10px center;box-shadow:none!important;cursor:pointer}
+  .userpick:focus{border-color:var(--green)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .spin{animation:spin 1s linear infinite}
+  #refresh:hover{color:var(--green);border-color:var(--green)}
+  .live-note{display:flex;gap:11px;align-items:center;background:var(--sage-soft);border:1px solid rgba(62,158,106,.3);border-radius:12px;padding:11px 14px;margin-bottom:22px;font-size:12.5px;color:#2b6b48}
+  .live-note .ld{width:8px;height:8px;border-radius:50%;background:var(--sage);flex:none;box-shadow:0 0 0 3px rgba(62,158,106,.2)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="leaf"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 3-11 9-13-1 8-5 12-9 13Zm0 0c0-6-3-11-9-13 1 8 5 12 9 13Z" stroke="#E9AE54" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
+    <div><div class="name">NatHabit</div><div class="sub">Creative Requests</div></div>
+  </div>
+  <div class="grow"></div>
+  <div class="preview"><span class="lbl">You are</span><select id="userpick" class="userpick"></select></div>
+  <button class="iconbtn" id="refresh" title="Refresh from the sheet">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <button class="iconbtn" id="bell" title="Inbox">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5"/></svg>
+    <span class="badge" id="bellCount" style="display:none">0</span>
+  </button>
+  <div class="whoami" id="whoami"></div>
+</header>
+
+<div class="wrap" id="app"></div>
+
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-h">
+    <h3><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" stroke="#E9AE54" stroke-width="1.5" stroke-linejoin="round"/></svg> Inbox</h3>
+    <button class="iconbtn" id="drawerClose" style="width:32px;height:32px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="drawer-b" id="drawerBody"></div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ============================================================
+   NatHabit — Creative Request Workflow (v2)
+   DATA LAYER is mock/in-memory. To go live, replace the DB.*
+   bodies with fetch() to your Google Apps Script endpoint —
+   nothing else changes. Search "SHEETS SWAP".
+   ============================================================ */
+
+/* ===== BACKEND CONFIG ===== */
+const API_URL = 'https://script.google.com/a/macros/nathabit.in/s/AKfycbwH9-3FJQqVV19jPLS9TMLHoQc5n4k_P1UTIaNeslaqB_QS5PgqBPzziZfTWC_-9bFv/exec';
+const LIVE = !!API_URL;
+
+const ROLES=['ecom','creative','manager','admin'];
+const ROLE_LABEL={ecom:'Ecom',creative:'Creative',manager:'Manager',admin:'Admin'};
+const AVCOLORS=['#E9AE54','#6FBF9C','#6BA8F0','#B48CE8','#F0894E','#8FD3B6'];
+function colorFor(n){let s=0;for(const c of n)s+=c.charCodeAt(0);return AVCOLORS[s%AVCOLORS.length];}
+function initials(n){return n.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();}
+
+let PEOPLE=[
+  {id:'u_an',name:'Ananya Rao',role:'ecom',phone:'919000000001'},
+  {id:'u_vk',name:'Vikram Shah',role:'ecom',phone:'919000000002'},
+  {id:'u_ka',name:'Kabir Mehta',role:'creative',phone:'919000000003'},
+  {id:'u_sa',name:'Sana Kapoor',role:'creative',phone:'919000000004'},
+  {id:'u_me',name:'Meera Nair',role:'manager',phone:'919000000005'},
+  {id:'u_ad',name:'Ops Admin',role:'admin',phone:'919000000000'},
+];
+const byId=id=>PEOPLE.find(p=>p.id===id)||{name:'—',role:'',phone:''};
+const firstOf=role=>PEOPLE.find(p=>p.role===role);
+const fname=id=>byId(id).name.split(' ')[0];
+
+const DAY=864e5; const today = LIVE ? new Date() : new Date('2026-08-04T10:00:00');
+function d(o){return new Date(today.getTime()+o*DAY);}
+function iso(dt){return dt.toISOString();}
+function fmtDate(s){return s?new Date(s).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—';}
+function fmtDT(s){const dt=new Date(s);return dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+', '+dt.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'});}
+function ago(s){const h=Math.round((today-new Date(s))/36e5);if(h<1)return 'just now';if(h<24)return h+'h ago';return Math.round(h/24)+'d ago';}
+function isLate(s){return s&&new Date(s)<today;}
+function uid(p){return p+Math.random().toString(36).slice(2,7);}
+const TODAY_STR=today.toISOString().slice(0,10);
+const startOfToday=new Date(TODAY_STR);
+function ymd(dt){return dt.toISOString().slice(0,10);}
+function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---- seed ---- */
+let REQUESTS=[
+  {id:'CR-1043',raisedBy:'u_an',platform:'Blinkit',nhSku:'NH-FW-101',request:'Face Wash hero banner for the brand store — festive-lite look, highlight ₹99 intro price',
+   requiredBy:iso(d(4)),sampleLink:'drive.google.com/nh-fw-refs',dimensions:'1080×1080, 1200×628',copyReq:true,charLimit:40,
+   other:'Keep logo top-left. Avoid red — clashes with pack.',createdAt:iso(d(-0.3)),
+   priority:null,status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
+   extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
+   activity:[{ts:iso(d(-0.3)),actor:'u_an',type:'created',note:'Raised the request'}]},
+
+  {id:'CR-1042',raisedBy:'u_vk',platform:'Zepto',nhSku:'NH-SH-204, NH-SH-205',request:'Hibiscus Shampoo A+ content — 5 modules (benefits, ingredients, how-to-use, before/after, trust)',
+   requiredBy:iso(d(6)),sampleLink:'',dimensions:'1200×628 ×5',copyReq:true,charLimit:90,other:'Match the new Hibiscus pack shade.',
+   createdAt:iso(d(-0.8)),priority:'high',status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
+   extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
+   activity:[{ts:iso(d(-0.8)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-0.5)),actor:'u_me',type:'priority',note:'Priority set to High'}]},
+
+  {id:'CR-1041',raisedBy:'u_an',platform:'Instamart',nhSku:'NH-FW-101',request:'Face Wash 15s product video — hook in 2s, show lather + herbal ingredients, end card with offer',
+   requiredBy:iso(d(3)),sampleLink:'drive.google.com/nh-fw-video',dimensions:'1080×1920',copyReq:false,charLimit:null,other:'Under 15s.',
+   createdAt:iso(d(-3)),priority:'med',status:'ongoing',assignee:'u_sa',agreedDeadline:iso(d(3)),declineReason:null,deliverable:null,
+   extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,
+   queries:[{id:'q1',from:'u_sa',to:'u_an',text:'Do we have the licence for the track from the last reel, or should I use royalty-free?',ts:iso(d(-0.5)),answer:null,answeredBy:null}],
+   activity:[{ts:iso(d(-3)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-2.8)),actor:'u_me',type:'priority',note:'Priority set to Medium'},{ts:iso(d(-2.5)),actor:'u_sa',type:'accept',note:'Accepted · deadline 7 Aug'},{ts:iso(d(-0.5)),actor:'u_sa',type:'query',note:'Raised a query for ecom'}]},
+
+  {id:'CR-1040',raisedBy:'u_an',platform:'Instamart',nhSku:'NH-SP-311, NH-SP-312, NH-SP-313',request:'Soap festive combo — 6 static ad creatives, Rakhi theme, warm palette',
+   requiredBy:iso(d(2)),sampleLink:'drive.google.com/nh-soap-festive',dimensions:'1080×1080 ×6',copyReq:true,charLimit:30,other:'Rakhi hooks welcome.',
+   createdAt:iso(d(-1.5)),priority:'high',status:'ongoing',assignee:'u_sa',agreedDeadline:iso(d(2)),declineReason:null,deliverable:null,
+   extension:{by:'u_sa',proposedDate:iso(d(5)),reason:'Two shoots already booked this week — earliest I can deliver 6 polished creatives is 9 Aug.',status:'pending',ts:iso(d(-0.4))},
+   prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
+   activity:[{ts:iso(d(-1.5)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-1.4)),actor:'u_me',type:'priority',note:'Priority set to High'},{ts:iso(d(-1.2)),actor:'u_sa',type:'accept',note:'Accepted · deadline 6 Aug'},{ts:iso(d(-0.4)),actor:'u_sa',type:'esc',note:'Requested extension to 9 Aug'}]},
+
+  {id:'CR-1039',raisedBy:'u_vk',platform:'Amazon',nhSku:'NH-HP-401, NH-HP-402',request:'Herbal Powder listing images v2 — white-bg main + 6 infographic secondaries',
+   requiredBy:iso(d(7)),sampleLink:'',dimensions:'2000×2000 ×7',copyReq:true,charLimit:120,other:'Multani + Neem SKUs.',
+   createdAt:iso(d(-2)),priority:'med',status:'ongoing',assignee:'u_ka',agreedDeadline:iso(d(7)),declineReason:null,deliverable:null,
+   extension:null,prepone:{by:'u_vk',proposedDate:iso(d(4)),reason:'Amazon sale date got pulled forward — need these live by 8 Aug.',status:'pending',ts:iso(d(-0.2))},
+   prioritizeReq:false,prioritizeBy:null,queries:[],
+   activity:[{ts:iso(d(-2)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-1.8)),actor:'u_me',type:'priority',note:'Priority set to Medium'},{ts:iso(d(-1.5)),actor:'u_ka',type:'accept',note:'Accepted · deadline 11 Aug'},{ts:iso(d(-0.2)),actor:'u_vk',type:'esc',note:'Requested prepone to 8 Aug'}]},
+
+  {id:'CR-1038',raisedBy:'u_vk',platform:'Amazon',nhSku:'NH-FP-501',request:'Neem Face Pack listing images — main + 4 secondaries',
+   requiredBy:iso(d(1)),sampleLink:'',dimensions:'2000×2000 ×5',copyReq:false,charLimit:null,other:'',
+   createdAt:iso(d(-4)),priority:'med',status:'pending_approval',assignee:'u_ka',agreedDeadline:iso(d(1)),declineReason:null,
+   deliverable:'drive.google.com/nh-neem-final',extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
+   activity:[{ts:iso(d(-4)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-3.6)),actor:'u_ka',type:'accept',note:'Accepted · deadline 5 Aug'},{ts:iso(d(-0.1)),actor:'u_ka',type:'done',note:'Marked complete · uploaded to Drive'}]},
+
+  {id:'CR-1037',raisedBy:'u_an',platform:'Blinkit',nhSku:'NH-SP-320',request:'Ubtan Soap launch banner',
+   requiredBy:iso(d(-1)),sampleLink:'',dimensions:'1080×1080',copyReq:true,charLimit:35,other:'',
+   createdAt:iso(d(-6)),priority:'med',status:'completed',assignee:'u_ka',agreedDeadline:iso(d(-1)),declineReason:null,
+   deliverable:'drive.google.com/nh-ubtan-final',extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
+   activity:[{ts:iso(d(-6)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-5.5)),actor:'u_ka',type:'accept',note:'Accepted'},{ts:iso(d(-2)),actor:'u_ka',type:'done',note:'Marked complete · uploaded to Drive'},{ts:iso(d(-1.6)),actor:'u_an',type:'approve',note:'Approved & closed'}]},
+
+  {id:'CR-1036',raisedBy:'u_an',platform:'Zepto',nhSku:'NH-SH-204, NH-SH-210',request:'Shampoo range comparison creative',
+   requiredBy:iso(d(8)),sampleLink:'',dimensions:'1200×628',copyReq:true,charLimit:60,other:'',
+   createdAt:iso(d(-1)),priority:null,status:'ongoing',assignee:'u_ka',agreedDeadline:iso(d(8)),declineReason:null,deliverable:null,
+   extension:null,prepone:null,prioritizeReq:true,prioritizeBy:'u_ka',queries:[],
+   activity:[{ts:iso(d(-1)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-0.8)),actor:'u_ka',type:'accept',note:'Accepted'},{ts:iso(d(-0.3)),actor:'u_ka',type:'esc',note:'Asked manager to prioritise'}]},
+
+  {id:'CR-1035',raisedBy:'u_vk',platform:'Blinkit',nhSku:'NH-HP-401',request:'Herbal Powder combo static',
+   requiredBy:iso(d(9)),sampleLink:'',dimensions:'1080×1080',copyReq:false,charLimit:null,other:'',
+   createdAt:iso(d(-1)),priority:null,status:'ongoing',assignee:'u_ka',agreedDeadline:iso(d(9)),declineReason:null,deliverable:null,
+   extension:null,prepone:null,prioritizeReq:true,prioritizeBy:'u_ka',queries:[],
+   activity:[{ts:iso(d(-1)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-0.8)),actor:'u_ka',type:'accept',note:'Accepted'},{ts:iso(d(-0.3)),actor:'u_ka',type:'esc',note:'Asked manager to prioritise'}]},
+];
+
+let NOTIFS=[
+  {id:uid('n'),to:'u_an',ts:iso(d(-0.5)),read:false,actor:'u_sa',reqId:'CR-1041',text:'<b>Sana</b> raised a query on <b>Face Wash video</b>',kind:'query'},
+  {id:uid('n'),to:'u_vk',ts:iso(d(-0.1)),read:false,actor:'u_ka',reqId:'CR-1038',text:'<b>Kabir</b> marked <b>Neem Face Pack images</b> complete — needs your approval',kind:'done'},
+  {id:uid('n'),to:'u_me',ts:iso(d(-0.4)),read:false,actor:'u_sa',reqId:'CR-1040',text:'<b>Sana</b> requested a deadline extension on <b>Soap festive combo</b>',kind:'esc'},
+  {id:uid('n'),to:'u_me',ts:iso(d(-0.2)),read:false,actor:'u_vk',reqId:'CR-1039',text:'<b>Vikram</b> requested a prepone on <b>Herbal Powder images</b>',kind:'esc'},
+  {id:uid('n'),to:'u_me',ts:iso(d(-0.3)),read:false,actor:'u_ka',reqId:'CR-1036',text:'<b>Kabir</b> asked you to prioritise <b>2 tasks</b>',kind:'prioritize'},
+];
+
+/* ---- DB: live Google Sheets backend ----
+   GET  {API_URL}                 -> {requests, team, notifications}
+   POST {action:'saveRequest'|'appendNotif'|'markRead', ...}
+   Apps Script doesn't send CORS headers, so writes use a no-cors
+   "fire-and-forget" POST and we update local state optimistically. */
+const DB={
+  requests:()=>REQUESTS, notifs:()=>NOTIFS,
+  async load(){
+    const data=await loadJSONP();
+    if(!data||!data.ok)throw new Error('Bad response');
+    if(Array.isArray(data.team)&&data.team.length)PEOPLE=data.team.map(p=>({id:String(p.id),name:p.name,role:p.role,phone:String(p.phone)}));
+    REQUESTS=(data.requests||[]).map(normalizeReq);
+    NOTIFS=(data.notifications||[]).map(n=>({id:String(n.id),to:String(n.to),ts:n.ts,read:truthy(n.read),actor:String(n.actor),reqId:String(n.reqId),text:n.text,kind:n.kind}));
+    REQUESTS.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    NOTIFS.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+  },
+  save(r){ const p=JSON.parse(JSON.stringify(r)); p.attachments=(r.attachments||[]).map(f=>f.name).join(', '); post({action:'saveRequest',request:p}); },
+  pushNotif(n){ NOTIFS.unshift(n); post({action:'appendNotif',notif:n}); },
+  markRead(userId){ post({action:'markRead',userId}); }
+};
+function loadJSONP(){
+  return new Promise((resolve,reject)=>{
+    const cb='__nh_cb_'+Date.now()+Math.floor(Math.random()*1000);
+    const s=document.createElement('script');
+    const timer=setTimeout(()=>{cleanup();reject(new Error('timeout'));},15000);
+    function cleanup(){clearTimeout(timer);delete window[cb];if(s.parentNode)s.remove();}
+    window[cb]=data=>{cleanup();resolve(data);};
+    s.onerror=()=>{cleanup();reject(new Error('load failed'));};
+    s.src=API_URL+'?callback='+cb+'&t='+Date.now();
+    document.body.appendChild(s);
+  });
+}
+function truthy(x){return x===true||x==='TRUE'||x==='true'||x===1||x==='1';}
+function post(payload){
+  fetch(API_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+    .catch(err=>console.warn('save failed',err));
+}
+function normalizeReq(r){
+  return {
+    id:String(r.id), raisedBy:String(r.raisedBy), platform:r.platform, nhSku:r.nhSku||'',
+    request:r.request, requiredBy:r.requiredBy, sampleLink:r.sampleLink||'',
+    attachments:(r.attachments?String(r.attachments).split(',').map(s=>s.trim()).filter(Boolean).map(name=>({name})):[]),
+    dimensions:r.dimensions||'', copyReq:truthy(r.copyReq), charLimit:r.charLimit?Number(r.charLimit):null,
+    other:r.other||'', createdAt:r.createdAt, priority:r.priority||null, status:r.status,
+    assignee:r.assignee?String(r.assignee):null, agreedDeadline:r.agreedDeadline||null,
+    declineReason:r.declineReason||null, deliverable:r.deliverable||null,
+    extension:r.extension||null, prepone:r.prepone||null,
+    prioritizeReq:truthy(r.prioritizeReq), prioritizeBy:r.prioritizeBy?String(r.prioritizeBy):null,
+    queries:(r.queries||[]).map(q=>({id:String(q.id),from:String(q.from),to:String(q.to),text:q.text,ts:q.ts,answer:q.answer||null,answeredBy:q.answeredBy||null})),
+    activity:(r.activity||[]).map(a=>({ts:a.ts,actor:String(a.actor),type:a.type,note:a.note}))
+  };
+}
+
+function log(r,actor,type,note){r.activity.push({ts:iso(today),actor,type,note});}
+function notify(to,actor,reqId,text,kind){DB.pushNotif({id:uid('n'),to,ts:iso(today),read:false,actor,reqId,text,kind});}
+function waLink(id,msg){return 'https://wa.me/'+byId(id).phone+'?text='+encodeURIComponent(msg);}
+function findReq(id){return REQUESTS.find(r=>r.id===id);}
+
+/* ---- state ---- */
+let currentRole='ecom', currentUser=firstOf('ecom').id;
+let creativeTab='pending', ecomFilter='all', searchQuery='';
+let expanded=new Set(), selected=new Set();
+
+function matchesSearch(r){
+  if(!searchQuery.trim())return true;
+  const q=searchQuery.toLowerCase();
+  return [r.id,r.request,r.nhSku||'',r.platform,byId(r.raisedBy).name,r.assignee?byId(r.assignee).name:'',STATUS_LABEL[r.status]||'',r.priority||'',r.dimensions||''].join(' ').toLowerCase().includes(q);
+}
+function searchBar(){
+  return `<div class="searchbar">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/><path d="M20 20l-3.2-3.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <input id="searchInput" placeholder="Search by ID, request, person, platform, status…" value="${esc(searchQuery)}">
+    ${searchQuery?`<button class="sclear" onclick="clearSearch()">×</button>`:''}
+  </div>`;
+}
+function bindSearch(){
+  const si=document.getElementById('searchInput');
+  if(!si)return;
+  si.oninput=e=>{searchQuery=e.target.value;render();};
+  if(searchQuery){si.focus();si.setSelectionRange(si.value.length,si.value.length);}
+}
+function clearSearch(){searchQuery='';render();}
+function mErr(msg){const mb=modalEl.querySelector('.modal-b');if(!mb)return;let b=mb.querySelector('.mbanner');if(!b){b=document.createElement('div');b.className='mbanner';mb.prepend(b);}b.textContent=msg;mb.scrollTop=0;}
+
+/* =================== RENDER =================== */
+const app=document.getElementById('app');
+function render(){
+  renderHeader();
+  if(currentRole==='ecom')viewEcom();
+  else if(currentRole==='creative')viewCreative();
+  else if(currentRole==='manager')viewManager();
+  else viewAdmin();
+  renderBell(); renderSelbar(); bindSearch();
+}
+function renderHeader(){
+  const sel=document.getElementById('userpick');
+  const groups={ecom:[],creative:[],manager:[],admin:[]};
+  PEOPLE.forEach(p=>{if(groups[p.role])groups[p.role].push(p);});
+  sel.innerHTML=ROLES.map(role=>{const ps=groups[role];if(!ps.length)return '';
+    return `<optgroup label="${ROLE_LABEL[role]}">${ps.map(p=>`<option value="${p.id}" ${p.id===currentUser?'selected':''}>${p.name}</option>`).join('')}</optgroup>`;}).join('');
+  sel.onchange=()=>{currentUser=sel.value;currentRole=byId(currentUser).role;expanded.clear();selected.clear();creativeTab='pending';ecomFilter='all';render();};
+  const u=byId(currentUser);
+  document.getElementById('whoami').innerHTML=`<div class="av" style="background:${colorFor(u.name)}">${initials(u.name)}</div><div class="meta"><b>${u.name}</b><span>${u.role}</span></div>`;
+  const rf=document.getElementById('refresh'); if(rf){rf.onclick=refresh; rf.style.display=LIVE?'grid':'none';}
+}
+async function refresh(){
+  if(!LIVE)return;
+  const rf=document.getElementById('refresh'); if(rf)rf.classList.add('spin');
+  try{await DB.load(); if(!PEOPLE.find(p=>p.id===currentUser)){currentUser=PEOPLE[0].id;currentRole=PEOPLE[0].role;} render(); toast('Up to date','Pulled the latest from the sheet.',null);}
+  catch(e){toast('Couldn\'t refresh','Check your connection and try again.',null);}
+  const rf2=document.getElementById('refresh'); if(rf2)rf2.classList.remove('spin');
+}
+
+const STATUS_LABEL={pending:'Pending acceptance',ongoing:'Ongoing',pending_approval:'Awaiting approval',completed:'Completed',declined:'Declined'};
+function statusChip(s){return `<span class="chip st-${s}"><span class="d"></span>${STATUS_LABEL[s]}</span>`;}
+function prioChip(p){const l={high:'High',med:'Medium',low:'Low'};return p?`<span class="chip pr-${p}">${l[p]}</span>`:`<span class="chip pr-none">No priority</span>`;}
+function miniAv(id){const p=byId(id);return `<span class="miniav" style="background:${colorFor(p.name)}">${initials(p.name)}</span>`;}
+function pendency(r){
+  const p=[];
+  if(r.status==='pending')p.push(['Awaiting acceptance','pend']);
+  if(r.status==='pending_approval')p.push(['Ecom sign-off','apr']);
+  if(r.extension&&r.extension.status==='pending')p.push(['Extension','ext']);
+  if(r.prepone&&r.prepone.status==='pending')p.push(['Prepone','pre']);
+  if(r.prioritizeReq)p.push(['Prioritise','prio']);
+  if(r.queries.some(q=>!q.answer))p.push(['Open query','q']);
+  if(r.status!=='completed'&&r.status!=='declined'&&isLate(r.agreedDeadline||r.requiredBy))p.push(['Overdue','late']);
+  if(!p.length)return `<span class="pend-none">On track</span>`;
+  return `<div class="pendwrap">${p.map(([t,c])=>`<span class="pend p-${c}">${t}</span>`).join('')}</div>`;
+}
+function flags(r){let out='';
+  if(r.extension&&r.extension.status==='pending')out+=`<span class="chip flag">Extension requested</span>`;
+  if(r.prepone&&r.prepone.status==='pending')out+=`<span class="chip flag">Prepone requested</span>`;
+  if(r.prioritizeReq)out+=`<span class="chip flagp">Prioritise requested</span>`;
+  if(r.queries.some(q=>!q.answer))out+=`<span class="chip flagp">Open query</span>`;
+  return out;}
+
+function trailHTML(r){const kc={accept:'acc',esc:'esc',approve:'acc',decline:'esc',done:'done',query:'q',answer:'q',priority:'acc'};
+  return `<div class="trail">${r.activity.map(a=>`<div class="ti ${kc[a.type]||''}"><div class="rail"><div class="node"></div></div><div class="tc"><div class="l1"><b>${fname(a.actor)}</b> · ${esc(a.note)}</div><div class="l2">${fmtDT(a.ts)}</div></div></div>`).join('')}</div>`;}
+function queryHTML(r){if(!r.queries.length)return '';
+  return r.queries.map(q=>`<div class="qthread"><div class="qh"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5Z" stroke="#B48CE8" stroke-width="1.5" stroke-linejoin="round"/></svg>Query</div>
+    <div class="qmsg"><span class="who">${fname(q.from)} → ${fname(q.to)}:</span> ${esc(q.text)}</div>
+    ${q.answer?`<div class="qmsg ans">↳ <b>${fname(q.answeredBy)}:</b> ${esc(q.answer)}</div>`:`<div class="qmsg open">↳ waiting for a reply…</div>`}</div>`).join('');}
+
+function briefBlock(r){
+  return `<div class="dgrid">
+    <div class="dg"><div class="k">Platform</div><div class="v">${r.platform}</div></div>
+    <div class="dg"><div class="k">NH SKU</div><div class="v mono">${esc(r.nhSku||'—')}</div></div>
+    <div class="dg"><div class="k">Raised by</div><div class="v">${miniAv(r.raisedBy)}${byId(r.raisedBy).name}</div></div>
+    <div class="dg"><div class="k">Required by</div><div class="v ${r.status!=='completed'&&isLate(r.requiredBy)?'late':''}">${fmtDate(r.requiredBy)}</div></div>
+    <div class="dg"><div class="k">Dimensions</div><div class="v mono">${esc(r.dimensions||'—')}</div></div>
+    <div class="dg"><div class="k">Copy</div><div class="v">${r.copyReq?`Yes · ${r.charLimit} char limit`:'Not needed'}</div></div>
+    ${r.assignee?`<div class="dg"><div class="k">With</div><div class="v">${miniAv(r.assignee)}${byId(r.assignee).name}</div></div>`:''}
+  </div>
+  <div class="brief"><b>Request:</b> ${esc(r.request)}</div>
+  ${r.other?`<div class="brief" style="border-top:0;padding-top:6px"><b>Other notes:</b> ${esc(r.other)}</div>`:''}
+  <div class="brief" style="border-top:0;padding-top:6px;font-size:12px">${r.sampleLink?`Samples: <a href="https://${r.sampleLink}" target="_blank">${r.sampleLink} ↗</a>`:(r.attachments&&r.attachments.length?'':'<span style="color:var(--mute)">No sample images attached</span>')}${r.deliverable?` &nbsp;·&nbsp; <b style="color:var(--sage)">Delivered:</b> <a href="https://${r.deliverable}" target="_blank">${r.deliverable} ↗</a>`:''}</div>
+  ${r.attachments&&r.attachments.length?`<div class="brief" style="border-top:0;padding-top:6px;font-size:12px">Attached: ${r.attachments.map(f=>`<span class="attchip">📎 ${esc(f.name)}</span>`).join(' ')}</div>`:''}
+  ${r.status==='declined'?`<div class="brief" style="color:var(--red)"><b>Declined:</b> ${esc(r.declineReason)}</div>`:''}
+  ${r.extension&&r.extension.status==='pending'?`<div class="brief" style="color:var(--coral)"><b>Extension asked:</b> to ${fmtDate(r.extension.proposedDate)} — ${esc(r.extension.reason)}</div>`:''}
+  ${r.prepone&&r.prepone.status==='pending'?`<div class="brief" style="color:var(--blue)"><b>Prepone asked:</b> to ${fmtDate(r.prepone.proposedDate)} — ${esc(r.prepone.reason)}</div>`:''}
+  ${queryHTML(r)}
+  <details class="more"><summary><svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Activity trail (${r.activity.length})</summary>${trailHTML(r)}</details>`;
+}
+
+/* ---- shared expandable table ---- */
+function taskTable(list,viewer){
+  if(!list.length)return emptyState(searchQuery?'No matches':'Nothing here',searchQuery?'Nothing matches “'+esc(searchQuery)+'”. Clear the search to see everything.':'No requests in this view.');
+  return `<div class="tablewrap"><table>
+    <thead><tr><th>ID</th><th>Platform</th><th>Raised by</th><th>NH SKU</th><th>Request</th><th>Status</th><th>Complete by</th><th>Pendency</th><th></th></tr></thead>
+    <tbody>${list.map(r=>{
+      const op=expanded.has(r.id);
+      const attn=viewer==='ecom'&&r.status==='pending_approval';
+      return `<tr class="expandrow ${op?'open':''} ${attn?'attn':''}" onclick="toggleRow('${r.id}')">
+        <td class="mono" style="color:var(--mute)">${r.id}</td>
+        <td>${r.platform}</td>
+        <td>${fname(r.raisedBy)}</td>
+        <td class="mono" style="font-size:11px">${esc(r.nhSku||'—')}</td>
+        <td><b style="font-weight:600">${esc(r.request.length>40?r.request.slice(0,40)+'…':r.request)}</b></td>
+        <td>${statusChip(r.status)}</td>
+        <td class="${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</td>
+        <td>${pendency(r)}</td>
+        <td><span class="chev">▸</span></td>
+      </tr>
+      ${op?`<tr><td class="detailcell" colspan="9"><div class="inner">${briefBlock(r)}<div class="actions" onclick="event.stopPropagation()">${detailActions(r,viewer)}</div></div></td></tr>`:''}`;
+    }).join('')}</tbody></table></div>`;
+}
+function toggleRow(id){expanded.has(id)?expanded.delete(id):expanded.add(id);render();}
+
+function detailActions(r,viewer){
+  let b='';
+  if(viewer==='ecom'){
+    r.queries.filter(q=>!q.answer&&q.to===r.raisedBy).forEach(q=>b+=`<button class="btn good sm" onclick="answerQuery('${r.id}','${q.id}')">Answer query</button>`);
+    if(r.status==='pending_approval'){
+      b+=`<a class="btn sm" href="https://${r.deliverable}" target="_blank">Review files ↗</a>`;
+      b+=`<button class="btn good sm" onclick="approveDone('${r.id}')">Approve &amp; close</button>`;
+      b+=`<button class="btn warn sm" onclick="sendBack('${r.id}')">Send back</button>`;
+    }
+    if(r.status==='pending'||r.status==='ongoing'){
+      b+=`<button class="btn sm" onclick="openUpdate('${r.id}')">Update request</button>`;
+      b+=`<button class="btn sm" onclick="remind('${r.id}')">Send reminder</button>`;
+      if(r.status==='ongoing'&&!(r.prepone&&r.prepone.status==='pending'))b+=`<button class="btn warn sm" onclick="openPrepone('${r.id}')">Request prepone</button>`;
+    }
+    if(r.status==='declined')b+=`<button class="btn sm" onclick="openUpdate('${r.id}')">Edit &amp; re-raise</button>`;
+    if(r.status==='completed')b+=`<a class="btn sm" href="https://${r.deliverable}" target="_blank">Open delivered files ↗</a>`;
+  }
+  if(viewer==='manager'){
+    if(r.extension&&r.extension.status==='pending'){
+      b+=`<button class="btn good sm" onclick="approveExt('${r.id}')">Approve · ${fmtDate(r.extension.proposedDate)}</button>`;
+      b+=`<button class="btn danger sm" onclick="declineExt('${r.id}')">Decline extension</button>`;
+    }
+    if(r.prepone&&r.prepone.status==='pending'){
+      b+=`<button class="btn good sm" onclick="approvePre('${r.id}')">Approve · ${fmtDate(r.prepone.proposedDate)}</button>`;
+      b+=`<button class="btn danger sm" onclick="declinePre('${r.id}')">Decline prepone</button>`;
+    }
+    if(r.status!=='completed'&&r.status!=='declined'){
+      b+=`<span style="align-self:center;color:var(--mute);font-size:12px;margin-right:2px">Set priority:</span>`;
+      b+=`<button class="btn danger sm" onclick="setPrio('${r.id}','high')">High</button><button class="btn sm" onclick="setPrio('${r.id}','med')">Medium</button><button class="btn sm" onclick="setPrio('${r.id}','low')">Low</button>`;
+    }
+  }
+  if(!b)b=`<span style="color:var(--mute);font-size:12px">No actions for you on this one right now.</span>`;
+  return b;
+}
+
+/* ---------------- ECOM ---------------- */
+function viewEcom(){
+  const all=DB.requests();
+  const counts={all:all.length,pending:0,ongoing:0,pending_approval:0,completed:0};
+  all.forEach(r=>{if(counts[r.status]!==undefined)counts[r.status]++;});
+  const filtered=(ecomFilter==='all'?all:all.filter(r=>r.status===ecomFilter)).filter(matchesSearch);
+  const needApproval=all.filter(r=>r.status==='pending_approval').length;
+  const openQ=all.reduce((a,r)=>a+r.queries.filter(q=>!q.answer).length,0);
+
+  app.innerHTML=`${demoNote()}
+    <div class="pagehead">
+      <div><div class="eyebrow">Ecom team</div><h1>All creative requests</h1>
+      <p class="lede">Raise a request, track every one in the table, nudge for anything pending — and sign off deliveries before they close.</p></div>
+      <button class="btn primary" id="newReq"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Raise request</button>
+    </div>
+    <div class="stats">
+      <div class="stat b"><div class="n">${counts.pending+counts.ongoing}</div><div class="k">In flight</div></div>
+      <div class="stat p"><div class="n">${needApproval}</div><div class="k">Awaiting your sign-off</div></div>
+      <div class="stat g"><div class="n">${openQ}</div><div class="k">Open queries</div></div>
+      <div class="stat s"><div class="n">${counts.completed}</div><div class="k">Completed</div></div>
+    </div>
+    ${searchBar()}
+    <div class="filters" id="filters"></div>
+    <div id="tbl"></div>`;
+  document.getElementById('newReq').onclick=()=>openRequestForm(null);
+  const f=document.getElementById('filters');
+  const opts=[['all','All'],['pending','Pending'],['ongoing','Ongoing'],['pending_approval','Awaiting sign-off'],['completed','Completed']];
+  f.innerHTML=opts.map(([k,l])=>`<button class="fchip ${ecomFilter===k?'on':''}" data-f="${k}">${l}${k!=='all'?` · ${counts[k]||0}`:''}</button>`).join('');
+  f.querySelectorAll('button').forEach(b=>b.onclick=()=>{ecomFilter=b.dataset.f;render();});
+  document.getElementById('tbl').innerHTML=taskTable(filtered,'ecom');
+}
+
+/* ---------------- CREATIVE ---------------- */
+function viewCreative(){
+  const all=DB.requests();
+  const pending=all.filter(r=>r.status==='pending').filter(matchesSearch);
+  const mine=all.filter(r=>r.assignee===currentUser);
+  const ongoing=mine.filter(r=>r.status==='ongoing'||r.status==='pending_approval').filter(matchesSearch);
+  const done=mine.filter(r=>r.status==='completed').filter(matchesSearch);
+  const prioRank={high:0,med:1,low:2,null:3};
+  pending.sort((a,b)=>(prioRank[a.priority]-prioRank[b.priority])||(new Date(a.requiredBy)-new Date(b.requiredBy)));
+
+  app.innerHTML=`${demoNote()}
+    <div class="pagehead"><div><div class="eyebrow">Creative team · ${byId(currentUser).name}</div><h1>Your board</h1>
+      <p class="lede">Accept or decline what comes in, work your ongoing list, and mark done once files are on Drive. Need more time or a call on priority? Send it to the manager.</p></div></div>
+    ${searchBar()}
+    <div class="tabs" id="tabs">
+      <button class="tab ${creativeTab==='pending'?'on':''}" data-t="pending">Pending requests<span class="cnt">${pending.length}</span></button>
+      <button class="tab ${creativeTab==='ongoing'?'on':''}" data-t="ongoing">Ongoing<span class="cnt">${ongoing.length}</span></button>
+      <button class="tab ${creativeTab==='done'?'on':''}" data-t="done">Completed<span class="cnt">${done.length}</span></button>
+    </div>
+    <div id="ctab"></div>`;
+  document.getElementById('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{creativeTab=b.dataset.t;selected.clear();render();});
+  const box=document.getElementById('ctab');
+  if(creativeTab==='pending'){
+    box.innerHTML=pending.length?pending.map(r=>creativeCard(r,'pending')).join(''):emptyState('Queue is clear','No new requests waiting to be picked up.');
+  }else if(creativeTab==='ongoing'){
+    box.innerHTML=(ongoing.length?`<p class="hint" style="margin:-4px 0 14px">Tip: tick a few tasks to send the manager a batch and ask which to prioritise.</p>`:'')
+      +(ongoing.length?ongoing.map(r=>creativeCard(r,'ongoing')).join(''):emptyState('Nothing in progress','Accept something from Pending to get going.'));
+  }else{
+    box.innerHTML=done.length?done.map(r=>creativeCard(r,'done')).join(''):emptyState('Nothing completed yet','Approved deliveries will land here.');
+  }
+}
+function creativeCard(r,mode){
+  const selectable=mode==='ongoing'&&r.status==='ongoing';
+  const on=selected.has(r.id);
+  let acts='';
+  if(mode==='pending'){
+    acts=`<button class="btn good" onclick="openAccept('${r.id}')">Accept</button><button class="btn danger" onclick="openDecline('${r.id}')">Decline</button>`;
+  }else if(mode==='ongoing'){
+    if(r.status==='pending_approval'){
+      acts=`<span style="align-self:center;color:var(--purple);font-size:12.5px;font-weight:600">Delivered — waiting on ${fname(r.raisedBy)} to approve</span><button class="btn sm" onclick="remindApproval('${r.id}')">Nudge ecom</button>`;
+    }else{
+      acts=`<button class="btn good" onclick="openComplete('${r.id}')">Mark complete</button>`;
+      acts+=`<button class="btn sm" onclick="openQuery('${r.id}')">Raise query</button>`;
+      if(!(r.extension&&r.extension.status==='pending'))acts+=`<button class="btn warn sm" onclick="openExtension('${r.id}')">Ask for extension</button>`;
+    }
+  }
+  return `<div class="card ${on?'sel':''} ${r.status==='pending_approval'?'attn':''}">
+    <div class="card-h">
+      ${selectable?`<div class="ckbx ${on?'on':''}" onclick="toggleSel('${r.id}')"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}
+      <div class="tt"><div class="rid mono">${r.id} · ${r.platform}${r.nhSku?' · '+esc(r.nhSku):''}</div><h3>${esc(r.request.length>60?r.request.slice(0,60)+'…':r.request)}</h3>
+        <div class="chips">${statusChip(r.status)}${prioChip(r.priority)}${r.copyReq?`<span class="chip type">Copy ≤${r.charLimit}</span>`:''}<span class="chip type">${r.dimensions}</span>${flags(r)}</div></div>
+    </div>
+    <div class="meta-row">
+      <div class="m"><div class="k">Raised by</div><div class="v">${miniAv(r.raisedBy)}${byId(r.raisedBy).name}</div></div>
+      <div class="m"><div class="k">${r.agreedDeadline?'Your deadline':'Required by'}</div><div class="v ${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</div></div>
+      ${r.sampleLink?`<div class="m"><div class="k">Samples</div><div class="v"><a href="https://${r.sampleLink}" target="_blank">Open ↗</a></div></div>`:''}
+    </div>
+    <div class="body-txt"><b>Brief:</b> ${esc(r.request)}${r.other?` <span style="color:var(--mute)">· ${esc(r.other)}</span>`:''}</div>
+    ${queryHTML(r)}
+    <details class="more"><summary><svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Activity trail (${r.activity.length})</summary>${trailHTML(r)}</details>
+    <div class="actions">${acts}</div>
+  </div>`;
+}
+function toggleSel(id){selected.has(id)?selected.delete(id):selected.add(id);render();}
+
+/* ---------------- MANAGER ---------------- */
+function viewManager(){
+  const all=DB.requests();
+  const ext=all.filter(r=>r.extension&&r.extension.status==='pending');
+  const pre=all.filter(r=>r.prepone&&r.prepone.status==='pending');
+  const prio=all.filter(r=>r.prioritizeReq);
+  const decisions=ext.length+pre.length+prio.length;
+
+  // group prioritise requests by requester
+  const prioGroups={};
+  prio.forEach(r=>{(prioGroups[r.prioritizeBy]=prioGroups[r.prioritizeBy]||[]).push(r);});
+
+  app.innerHTML=`${demoNote()}
+    <div class="pagehead"><div><div class="eyebrow">Manager · ${byId(currentUser).name}</div><h1>Requests &amp; the board</h1>
+      <p class="lede">Rule on extensions and prepone asks, set priorities when the team needs direction, and keep an eye on every task in one place.</p></div></div>
+    <div class="stats">
+      <div class="stat c"><div class="n">${ext.length}</div><div class="k">Extension asks</div></div>
+      <div class="stat b"><div class="n">${pre.length}</div><div class="k">Prepone asks</div></div>
+      <div class="stat p"><div class="n">${prio.length}</div><div class="k">To prioritise</div></div>
+      <div class="stat g"><div class="n">${all.filter(r=>r.status==='ongoing').length}</div><div class="k">Ongoing</div></div>
+    </div>
+    <div class="section-t">Needs your decision <span class="ct">${decisions}</span></div>
+    <div id="reqs"></div>
+    <div class="section-t">The board — all tasks <span class="ct">${all.length}</span></div>
+    ${searchBar()}
+    <div id="board"></div>`;
+
+  let R='';
+  ext.forEach(r=>{R+=`<div class="reqbox ext"><div class="rh"><span class="tag">Extension</span><b>${esc(r.request.slice(0,52))}</b></div>
+    <div class="line"><b>${fname(r.extension.by)}</b> can't hit the current deadline · <span class="mono">${r.id}</span></div>
+    <div class="datechg"><span class="old">${fmtDate(r.requiredBy)}</span> → <span class="new">${fmtDate(r.extension.proposedDate)}</span></div>
+    <div class="line">${esc(r.extension.reason)}</div>
+    <div class="actions" style="border-top:0;padding-top:11px;margin-top:6px"><button class="btn good sm" onclick="approveExt('${r.id}')">Approve new date</button><button class="btn danger sm" onclick="declineExt('${r.id}')">Decline — hold original</button></div></div>`;});
+  pre.forEach(r=>{R+=`<div class="reqbox pre"><div class="rh"><span class="tag">Prepone</span><b>${esc(r.request.slice(0,52))}</b></div>
+    <div class="line"><b>${fname(r.prepone.by)}</b> (ecom) wants this earlier · <span class="mono">${r.id}</span></div>
+    <div class="datechg pre"><span class="old">${fmtDate(r.requiredBy)}</span> → <span class="new">${fmtDate(r.prepone.proposedDate)}</span></div>
+    <div class="line">${esc(r.prepone.reason)}</div>
+    <div class="actions" style="border-top:0;padding-top:11px;margin-top:6px"><button class="btn good sm" onclick="approvePre('${r.id}')">Approve earlier date</button><button class="btn danger sm" onclick="declinePre('${r.id}')">Decline — hold original</button></div></div>`;});
+  Object.entries(prioGroups).forEach(([by,tasks])=>{
+    R+=`<div class="reqbox prio"><div class="rh"><span class="tag">Prioritise</span><b>${fname(by)} needs a call on ${tasks.length} task${tasks.length>1?'s':''}</b></div>
+    <div class="line" style="margin-bottom:8px">Set the order they should be worked in:</div>
+    ${tasks.map(r=>`<div class="prioline"><div class="pl">${esc(r.request.slice(0,44))}<div class="mono">${r.id} · req. ${fmtDate(r.requiredBy)}</div></div>
+      <div class="prioset"><button class="btn danger sm" onclick="setPrio('${r.id}','high')">High</button><button class="btn sm" onclick="setPrio('${r.id}','med')">Med</button><button class="btn sm" onclick="setPrio('${r.id}','low')">Low</button></div></div>`).join('')}</div>`;});
+  document.getElementById('reqs').innerHTML=decisions?R:emptyState('All clear','No extensions, prepones, or prioritisation calls waiting on you.');
+  document.getElementById('board').innerHTML=taskTable(all.filter(matchesSearch),'manager');
+}
+
+/* ---------------- ADMIN ---------------- */
+function viewAdmin(){
+  const all=DB.requests();
+  const c={pending:0,ongoing:0,pending_approval:0,completed:0,declined:0};
+  all.forEach(r=>c[r.status]++);
+  const feed=all.flatMap(r=>r.activity.map(a=>({...a,rid:r.id}))).sort((a,b)=>new Date(b.ts)-new Date(a.ts)).slice(0,12);
+  app.innerHTML=`${demoNote()}
+    <div class="pagehead"><div><div class="eyebrow">Admin</div><h1>Everything, at a glance</h1>
+      <p class="lede">The full board, the team directory, and every action logged — your source of truth, and a clean dataset for reviews.</p></div></div>
+    <div class="stats">
+      <div class="stat b"><div class="n">${c.pending}</div><div class="k">Pending</div></div>
+      <div class="stat g"><div class="n">${c.ongoing}</div><div class="k">Ongoing</div></div>
+      <div class="stat p"><div class="n">${c.pending_approval}</div><div class="k">Awaiting sign-off</div></div>
+      <div class="stat s"><div class="n">${c.completed}</div><div class="k">Completed</div></div>
+    </div>
+    <div class="section-t">All requests <span class="ct">${all.length}</span></div>
+    ${searchBar()}
+    <div id="board"></div>
+    <div class="grid2" style="margin-top:24px">
+      <div><div class="section-t" style="margin-top:0">Team <span class="ct">${PEOPLE.filter(p=>p.role!=='admin').length}</span></div>
+        <div class="tablewrap">${PEOPLE.filter(p=>p.role!=='admin').map(p=>`<div class="person"><div class="av" style="background:${colorFor(p.name)}">${initials(p.name)}</div><div class="pn"><b>${p.name}</b><span class="mono">+${p.phone}</span></div><span class="rolechip rc-${p.role}">${p.role}</span></div>`).join('')}</div>
+        <p class="hint" style="padding:0 2px">Phone numbers here power the one-tap WhatsApp pings.</p></div>
+      <div><div class="section-t" style="margin-top:0">Recent activity <span class="ct">latest ${feed.length}</span></div>
+        <div class="tablewrap" style="padding:6px 0">${feed.map(a=>`<div class="person" style="padding:10px 14px"><div class="av" style="background:${colorFor(byId(a.actor).name)};width:28px;height:28px;font-size:11px">${initials(byId(a.actor).name)}</div><div class="pn"><b style="font-weight:500;font-size:12.5px">${fname(a.actor)} · ${esc(a.note)}</b><span class="mono">${a.rid} · ${ago(a.ts)}</span></div></div>`).join('')}</div></div>
+    </div>
+    <div class="section-t">Backend</div>
+    <div class="backend-card">${LIVE
+      ? `<span class="pill" style="background:var(--sage-soft);color:var(--sage)"><span class="d"></span>Live · Google Sheets</span>
+         <p style="color:var(--dim);margin:11px 0 0;font-size:13px">Connected to your sheet — every action syncs for the whole team. This board is also your clean dataset: open the sheet any time to pivot or export for reviews.</p>`
+      : `<span class="pill"><span class="d"></span>Demo mode · in-memory</span>
+         <p style="color:var(--dim);margin:11px 0 0;font-size:13px">Runs on sample data that resets on refresh. Connect a Google Sheet to make it live for the whole team.</p>`}</div>`;
+  document.getElementById('board').innerHTML=taskTable(all.filter(matchesSearch),'admin');
+}
+
+/* =================== ACTIONS =================== */
+function setPrio(id,p){const r=findReq(id);
+  if(r.status==='completed'||r.status==='declined'){render();return;}
+  r.priority=p;r.prioritizeReq=false;const wasBy=r.prioritizeBy;r.prioritizeBy=null;
+  log(r,currentUser,'priority','Priority set to '+({high:'High',med:'Medium',low:'Low'}[p]));
+  if(r.assignee)notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> set <b>${esc(r.request.slice(0,30))}</b> to ${p} priority`,'priority');
+  DB.save(r);render();toast('Priority set','Marked '+p+' priority.',r.assignee?{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Priority on "${r.request.slice(0,40)}" (${r.id}): ${p.toUpperCase()}.`)}:null);}
+
+function openAccept(id){const r=findReq(id);
+  modal(`Accept — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>Deadline you're committing to <span class="req">*</span></label><input type="date" id="accDate" min="${TODAY_STR}" value="${r.requiredBy.slice(0,10)}"><div class="hint">Requested by ${fmtDate(r.requiredBy)}. Confirm it, or set the date you can realistically hit.</div></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn good" onclick="doAccept('${id}')">Accept task</button>`);}
+function doAccept(id){const r=findReq(id);
+  if(r.status!=='pending'){closeModal();render();toast('Already taken','Someone just picked this one up.',null);return;}
+  const v=document.getElementById('accDate').value;
+  if(!v){mErr('Pick a deadline you can commit to.');return;}
+  if(v<TODAY_STR){mErr('That deadline is in the past — pick today or later.');return;}
+  r.status='ongoing';r.assignee=currentUser;r.agreedDeadline=new Date(v).toISOString();
+  log(r,currentUser,'accept','Accepted · deadline '+fmtDate(r.agreedDeadline));
+  notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> accepted <b>${esc(r.request.slice(0,30))}</b> — deadline ${fmtDate(r.agreedDeadline)}`,'accept');
+  DB.save(r);closeModal();render();toast('Accepted',fname(r.raisedBy)+' has been notified.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Accepted "${r.request.slice(0,40)}" (${r.id}). Deadline ${fmtDate(r.agreedDeadline)}.`)});}
+
+function openDecline(id){const r=findReq(id);
+  modal(`Decline — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>Reason (goes back to ecom) <span class="req">*</span></label><textarea id="decWhy" placeholder="e.g. This needs a photoshoot we can't schedule in time — suggest re-scoping."></textarea></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn danger" onclick="doDecline('${id}')">Decline request</button>`);}
+function doDecline(id){const r=findReq(id);
+  if(r.status!=='pending'){closeModal();render();toast('Already handled','This request already moved on.',null);return;}
+  const why=document.getElementById('decWhy').value.trim();
+  if(!why){mErr('Add a short reason so ecom knows why.');return;}
+  r.status='declined';r.declineReason=why;
+  log(r,currentUser,'decline','Declined the request');
+  notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> declined <b>${esc(r.request.slice(0,30))}</b>`,'decline');
+  DB.save(r);closeModal();render();toast('Declined',fname(r.raisedBy)+' has been notified.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Had to decline "${r.request.slice(0,40)}" (${r.id}): ${r.declineReason}`)});}
+
+function openComplete(id){const r=findReq(id);
+  modal(`Mark complete — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>Drive link to the final files <span class="req">*</span></label><input id="delLink" placeholder="drive.google.com/…" value="drive.google.com/nh-final"><div class="hint">You can only mark complete once files are uploaded. ${fname(r.raisedBy)} then approves to close it.</div></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn good" onclick="doComplete('${id}')">Mark complete</button>`);}
+function doComplete(id){const r=findReq(id);
+  if(r.status!=='ongoing'){closeModal();render();toast('Changed','This task is no longer in progress.',null);return;}
+  const link=document.getElementById('delLink').value.trim();
+  if(!link){mErr('Paste the Drive link — you can only mark complete once the files are uploaded.');return;}
+  r.status='pending_approval';r.deliverable=link;
+  log(r,currentUser,'done','Marked complete · uploaded to Drive');
+  notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> marked <b>${esc(r.request.slice(0,30))}</b> complete — needs your approval`,'done');
+  DB.save(r);closeModal();render();toast('Sent for approval',fname(r.raisedBy)+' will review and sign off.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Done — "${r.request.slice(0,40)}" (${r.id}): https://${link}. Please review & approve.`)});}
+
+function openQuery(id){const r=findReq(id);
+  modal(`Raise a query — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>What do you need to know? <span class="req">*</span></label><textarea id="qText" placeholder="e.g. Which offer should the end-card show?"></textarea><div class="hint">Goes to ${fname(r.raisedBy)}, who raised this.</div></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="doQuery('${id}')">Send query</button>`);}
+function doQuery(id){const r=findReq(id);const t=document.getElementById('qText').value.trim();if(!t){mErr('Type your question first.');return;}
+  r.queries.push({id:uid('q'),from:currentUser,to:r.raisedBy,text:t,ts:iso(today),answer:null,answeredBy:null});
+  log(r,currentUser,'query','Raised a query for ecom');
+  notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> asked a question on <b>${esc(r.request.slice(0,30))}</b>`,'query');
+  DB.save(r);closeModal();render();toast('Query sent',fname(r.raisedBy)+' will see it in their inbox.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Q on "${r.request.slice(0,40)}" (${r.id}): ${t}`)});}
+function answerQuery(id,qid){const r=findReq(id);const q=r.queries.find(x=>x.id===qid);
+  modal(`Answer — ${esc(r.request.slice(0,40))}`,`<div class="qthread" style="margin-top:0"><div class="qmsg"><span class="who">${fname(q.from)} asked:</span> ${esc(q.text)}</div></div><div class="field" style="margin-top:14px"><label>Your reply <span class="req">*</span></label><textarea id="aText" placeholder="Type your answer…"></textarea></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn good" onclick="doAnswer('${id}','${qid}')">Send reply</button>`);}
+function doAnswer(id,qid){const r=findReq(id);const q=r.queries.find(x=>x.id===qid);const a=document.getElementById('aText').value.trim();if(!a){mErr('Type your reply first.');return;}
+  q.answer=a;q.answeredBy=currentUser;log(r,currentUser,'answer','Answered the query');
+  notify(q.from,currentUser,id,`<b>${fname(currentUser)}</b> answered your query on <b>${esc(r.request.slice(0,30))}</b>`,'answer');
+  DB.save(r);closeModal();render();toast('Reply sent',fname(q.from)+' has your answer.',{label:'Ping '+fname(q.from),href:waLink(q.from,`Re "${r.request.slice(0,40)}" (${r.id}): ${a}`)});}
+
+function openExtension(id){const r=findReq(id);
+  const cur=new Date(r.agreedDeadline||r.requiredBy);
+  const minD=ymd(new Date(cur.getTime()+DAY)), def=ymd(new Date(cur.getTime()+2*DAY));
+  modal(`Ask for extension — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>New date you can hit <span class="req">*</span></label><input type="date" id="extDate" min="${minD}" value="${def}"><div class="hint">Current deadline: ${fmtDate(r.agreedDeadline||r.requiredBy)}. Must be later than that.</div></div><div class="field"><label>Why (goes to the manager) <span class="req">*</span></label><textarea id="extWhy" placeholder="e.g. Two shoots already booked this week…"></textarea></div><p class="hint">Deadline won't change until ${fname(firstOf('manager').id)} approves.</p>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn warn" onclick="doExtension('${id}')">Send to manager</button>`);}
+function doExtension(id){const r=findReq(id);
+  if(r.status!=='ongoing'){closeModal();render();toast('Changed','This task isn\'t in progress anymore.',null);return;}
+  if(r.extension&&r.extension.status==='pending'){closeModal();render();toast('Already sent','An extension request is already with the manager.',null);return;}
+  const dv=document.getElementById('extDate').value, why=document.getElementById('extWhy').value.trim();
+  if(!dv){mErr('Pick the new date.');return;}
+  if(new Date(dv)<=new Date(r.agreedDeadline||r.requiredBy)){mErr('An extension must be later than the current deadline ('+fmtDate(r.agreedDeadline||r.requiredBy)+').');return;}
+  if(!why){mErr('Add a reason — the manager needs it to decide.');return;}
+  r.extension={by:currentUser,proposedDate:new Date(dv).toISOString(),reason:why,status:'pending',ts:iso(today)};
+  log(r,currentUser,'esc','Requested extension to '+fmtDate(r.extension.proposedDate));
+  const mgr=firstOf('manager');notify(mgr.id,currentUser,id,`<b>${fname(currentUser)}</b> requested a deadline extension on <b>${esc(r.request.slice(0,30))}</b>`,'esc');
+  DB.save(r);closeModal();render();toast('Sent to manager',fname(mgr.id)+' will approve or decline.',{label:'Ping '+fname(mgr.id),href:waLink(mgr.id,`Extension ask on "${r.request.slice(0,40)}" (${r.id}) → ${fmtDate(r.extension.proposedDate)}. Reason: ${r.extension.reason}`)});}
+
+function askPrioritize(){const ids=[...selected];if(!ids.length)return;
+  ids.forEach(id=>{const r=findReq(id);r.prioritizeReq=true;r.prioritizeBy=currentUser;log(r,currentUser,'esc','Asked manager to prioritise');});
+  const mgr=firstOf('manager');notify(mgr.id,currentUser,ids[0],`<b>${fname(currentUser)}</b> asked you to prioritise <b>${ids.length} task${ids.length>1?'s':''}</b>`,'prioritize');
+  const n=ids.length;selected.clear();DB.save(r);render();
+  toast('Sent to manager','Asked '+fname(mgr.id)+' to prioritise '+n+' task'+(n>1?'s':'')+'.',{label:'Ping '+fname(mgr.id),href:waLink(mgr.id,`Juggling ${n} tasks — can you set priority order? IDs: ${ids.join(', ')}`)});}
+
+function approveExt(id){const r=findReq(id);
+  if(!(r.extension&&r.extension.status==='pending')){render();toast('Already handled','This extension was already decided.',null);return;}
+  const pd=r.extension.proposedDate;r.extension.status='approved';r.requiredBy=pd;r.agreedDeadline=pd;
+  log(r,currentUser,'approve','Approved extension to '+fmtDate(pd));
+  notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> approved your extension on <b>${esc(r.request.slice(0,30))}</b> (${fmtDate(pd)})`,'approve');
+  notify(r.raisedBy,currentUser,id,`Deadline for <b>${esc(r.request.slice(0,30))}</b> moved to ${fmtDate(pd)} (manager-approved)`,'approve');
+  DB.save(r);render();toast('Extension approved','New deadline '+fmtDate(pd)+' locked. Both sides notified.',{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Approved — "${r.request.slice(0,40)}" (${r.id}) new deadline ${fmtDate(pd)}.`)});}
+function declineExt(id){const r=findReq(id);
+  if(!(r.extension&&r.extension.status==='pending')){render();return;}
+  r.extension.status='declined';log(r,currentUser,'decline','Declined extension — held '+fmtDate(r.requiredBy));
+  notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> declined the extension on <b>${esc(r.request.slice(0,30))}</b> — ${fmtDate(r.requiredBy)} holds`,'decline');
+  DB.save(r);render();toast('Extension declined','Original deadline held. '+fname(r.assignee)+' notified.',{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Re "${r.request.slice(0,40)}" (${r.id}) — can't extend, ${fmtDate(r.requiredBy)} needs to hold.`)});}
+
+function approvePre(id){const r=findReq(id);
+  if(!(r.prepone&&r.prepone.status==='pending')){render();toast('Already handled','This prepone was already decided.',null);return;}
+  const pd=r.prepone.proposedDate;r.prepone.status='approved';r.requiredBy=pd;r.agreedDeadline=pd;
+  log(r,currentUser,'approve','Approved prepone to '+fmtDate(pd));
+  notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> moved <b>${esc(r.request.slice(0,30))}</b> earlier — new deadline ${fmtDate(pd)}`,'approve');
+  notify(r.prepone.by,currentUser,id,`Prepone approved on <b>${esc(r.request.slice(0,30))}</b> — now due ${fmtDate(pd)}`,'approve');
+  DB.save(r);render();toast('Prepone approved','Moved to '+fmtDate(pd)+'. Creative notified.',{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Heads up — "${r.request.slice(0,40)}" (${r.id}) pulled earlier to ${fmtDate(pd)}.`)});}
+function declinePre(id){const r=findReq(id);
+  if(!(r.prepone&&r.prepone.status==='pending')){render();return;}
+  r.prepone.status='declined';log(r,currentUser,'decline','Declined prepone — held '+fmtDate(r.requiredBy));
+  notify(r.prepone.by,currentUser,id,`<b>${fname(currentUser)}</b> declined the prepone on <b>${esc(r.request.slice(0,30))}</b> — ${fmtDate(r.requiredBy)} holds`,'decline');
+  DB.save(r);render();toast('Prepone declined','Original deadline held. '+fname(r.prepone.by)+' notified.',null);}
+
+function approveDone(id){const r=findReq(id);
+  if(r.status!=='pending_approval'){render();toast('Already handled','This one already moved on.',null);return;}
+  r.status='completed';log(r,currentUser,'approve','Approved & closed');
+  notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> approved & closed <b>${esc(r.request.slice(0,30))}</b> — nice work`,'approve');
+  DB.save(r);render();toast('Approved & closed',fname(r.assignee)+' has been notified.',{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Approved & closed "${r.request.slice(0,40)}" (${r.id}). Thanks!`)});}
+function sendBack(id){const r=findReq(id);
+  modal(`Send back — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>What needs changing? <span class="req">*</span></label><textarea id="sbWhy" placeholder="e.g. Logo is too small in 2 of the images; offer text is wrong."></textarea></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn warn" onclick="doSendBack('${id}')">Send back for changes</button>`);}
+function doSendBack(id){const r=findReq(id);
+  if(r.status!=='pending_approval'){closeModal();render();return;}
+  const why=document.getElementById('sbWhy').value.trim();
+  if(!why){mErr('Tell the creative what needs changing.');return;}
+  r.status='ongoing';
+  log(r,currentUser,'decline','Sent back for changes: '+why);
+  notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> sent <b>${esc(r.request.slice(0,30))}</b> back for changes`,'decline');
+  DB.save(r);closeModal();render();toast('Sent back',fname(r.assignee)+' will pick up the changes.',{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Small changes on "${r.request.slice(0,40)}" (${r.id}): ${why}`)});}
+
+function remind(id){const r=findReq(id);const target=r.assignee||firstOf('creative').id;log(r,currentUser,'query','Sent a reminder');
+  notify(target,currentUser,id,`<b>${fname(currentUser)}</b> sent a reminder on <b>${esc(r.request.slice(0,30))}</b>`,'query');
+  DB.save(r);render();toast('Reminder sent',fname(target)+' has been nudged.',{label:'Ping '+fname(target),href:waLink(target,`Gentle nudge on "${r.request.slice(0,40)}" (${r.id}) — due ${fmtDate(r.agreedDeadline||r.requiredBy)}. Where are we?`)});}
+function remindApproval(id){const r=findReq(id);log(r,currentUser,'query','Nudged ecom for approval');
+  notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> is waiting on your sign-off for <b>${esc(r.request.slice(0,30))}</b>`,'done');
+  DB.save(r);render();toast('Ecom nudged',fname(r.raisedBy)+' has been reminded to approve.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Delivered "${r.request.slice(0,40)}" (${r.id}) — could you review & approve when free?`)});}
+
+function openPrepone(id){const r=findReq(id);
+  const cur=new Date(r.agreedDeadline||r.requiredBy);
+  const maxD=ymd(new Date(cur.getTime()-DAY));
+  const def=ymd(new Date(Math.max(startOfToday.getTime(), cur.getTime()-3*DAY)));
+  modal(`Request prepone — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>Earlier date you need it by <span class="req">*</span></label><input type="date" id="preDate" min="${TODAY_STR}" max="${maxD}" value="${def}"><div class="hint">Current deadline: ${fmtDate(r.agreedDeadline||r.requiredBy)}. Must be earlier than that, and not in the past.</div></div><div class="field"><label>Why (goes to the manager) <span class="req">*</span></label><textarea id="preWhy" placeholder="e.g. Sale date got pulled forward."></textarea></div><p class="hint">Manager decides; if approved, the creative's deadline moves earlier.</p>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn warn" onclick="doPrepone('${id}')">Send to manager</button>`);}
+function doPrepone(id){const r=findReq(id);
+  if(r.status!=='ongoing'){closeModal();render();toast('Changed','This task isn\'t in progress anymore.',null);return;}
+  if(r.prepone&&r.prepone.status==='pending'){closeModal();render();toast('Already sent','A prepone request is already with the manager.',null);return;}
+  const dv=document.getElementById('preDate').value, why=document.getElementById('preWhy').value.trim();
+  if(!dv){mErr('Pick the earlier date.');return;}
+  if(dv<TODAY_STR){mErr('Pick a date that isn\'t in the past.');return;}
+  if(new Date(dv)>=new Date(r.agreedDeadline||r.requiredBy)){mErr('A prepone must be earlier than the current deadline ('+fmtDate(r.agreedDeadline||r.requiredBy)+').');return;}
+  if(!why){mErr('Add a reason — the manager needs it to decide.');return;}
+  r.prepone={by:currentUser,proposedDate:new Date(dv).toISOString(),reason:why,status:'pending',ts:iso(today)};
+  log(r,currentUser,'esc','Requested prepone to '+fmtDate(r.prepone.proposedDate));
+  const mgr=firstOf('manager');notify(mgr.id,currentUser,id,`<b>${fname(currentUser)}</b> requested a prepone on <b>${esc(r.request.slice(0,30))}</b>`,'esc');
+  DB.save(r);closeModal();render();toast('Sent to manager',fname(mgr.id)+' will decide.',{label:'Ping '+fname(mgr.id),href:waLink(mgr.id,`Prepone ask on "${r.request.slice(0,40)}" (${r.id}) → ${fmtDate(r.prepone.proposedDate)}. Reason: ${r.prepone.reason}`)});}
+
+/* new / update request */
+let sampleFiles=[];
+function onSampleFiles(input){
+  const list=document.getElementById('fFileList');
+  for(const f of input.files){ if(sampleFiles.length>=8){mErr('Up to 8 sample images.');break;} sampleFiles.push({name:f.name,size:f.size}); }
+  input.value='';
+  list.innerHTML=sampleFiles.map((f,i)=>`<div class="fitem"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 15l4-4 4 4 3-3 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fn">${esc(f.name)}</span><span class="fs">${(f.size/1024).toFixed(0)} KB</span><button class="frm" onclick="removeSample(${i})">×</button></div>`).join('');
+}
+function removeSample(i){sampleFiles.splice(i,1);onSampleFiles({files:[],value:''});}
+
+function openRequestForm(editId){
+  sampleFiles=[];
+  const r=editId?findReq(editId):null;
+  if(r&&r.attachments)sampleFiles=r.attachments.slice();
+  const ecomOpts=PEOPLE.filter(p=>p.role==='ecom').map(p=>`<option value="${p.id}" ${r&&r.raisedBy===p.id||!r&&p.id===currentUser?'selected':''}>${p.name}</option>`).join('');
+  const plats=['Blinkit','Zepto','Instamart','Amazon','BigBasket','Website'].map(p=>`<option ${r&&r.platform===p?'selected':''}>${p}</option>`).join('');
+  modal(editId?'Update request':'Raise a creative request',`
+    <div class="two">
+      <div class="field"><label>Raised by <span class="req">*</span></label><select id="fBy">${ecomOpts}</select></div>
+      <div class="field"><label>Platform <span class="req">*</span></label><select id="fPlat">${plats}</select></div>
+    </div>
+    <div class="field"><label>Request <span class="req">*</span></label><textarea id="fReq" placeholder="What do you need? e.g. Hero banner for Face Wash on Blinkit brand store…">${r?esc(r.request):''}</textarea></div>
+    <div class="field"><label>NH SKU code(s) <span class="req">*</span></label><input id="fSku" placeholder="e.g. NH-FW-101  (comma-separate for multiple)" value="${r?esc(r.nhSku||''):''}"><div class="hint">One or many — separate with commas.</div></div>
+    <div class="two">
+      <div class="field"><label>Required by <span class="req">*</span></label><input type="date" id="fDate" min="${TODAY_STR}" value="${r?r.requiredBy.slice(0,10):d(5).toISOString().slice(0,10)}"></div>
+      <div class="field"><label>Dimensions</label><input id="fDim" placeholder="e.g. 1080×1080, 1200×628" value="${r?esc(r.dimensions):''}"></div>
+    </div>
+    <div class="field"><label>Sample images <span style="color:var(--mute);font-weight:400">(optional)</span></label>
+      <div class="uploader" id="fDrop">
+        <input type="file" id="fFiles" multiple accept="image/*" style="display:none" onchange="onSampleFiles(this)">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 15V4m0 0l-4 4m4-4l4 4M5 17v2a2 2 0 002 2h10a2 2 0 002-2v-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><b>Upload from your computer or Drive</b><span>Click to choose, or drop images here</span></div>
+      </div>
+      <div id="fFileList" class="filelist"></div>
+      <input id="fSample" placeholder="…or paste a Drive / folder link instead" value="${r?esc(r.sampleLink):''}" style="margin-top:9px">
+    </div>
+    <div class="field"><div class="toggle-row"><div class="tl"><b>Copy required?</b><span>Turn on if the creative needs written copy</span></div><div class="toggle ${r&&r.copyReq?'on':''}" id="fCopy" onclick="this.classList.toggle('on');document.getElementById('fCharWrap').style.display=this.classList.contains('on')?'block':'none'"><div class="knob"></div></div></div></div>
+    <div class="field" id="fCharWrap" style="display:${r&&r.copyReq?'block':'none'}"><label>Character limit</label><input type="number" id="fChar" placeholder="e.g. 40" value="${r&&r.charLimit?r.charLimit:''}"></div>
+    <div class="field"><label>Any other details</label><textarea id="fOther" placeholder="Do's and don'ts, references, brand notes…">${r?esc(r.other):''}</textarea></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="submitRequest('${editId||''}')">${editId?'Save changes':'Send to creatives'}</button>`);
+  if(sampleFiles.length){const list=document.getElementById('fFileList');if(list)list.innerHTML=sampleFiles.map((f,i)=>`<div class="fitem"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 15l4-4 4 4 3-3 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fn">${esc(f.name)}</span><span class="fs">${f.size?(f.size/1024).toFixed(0)+' KB':''}</span><button class="frm" onclick="removeSample(${i})">×</button></div>`).join('');}
+  const drop=document.getElementById('fDrop');
+  if(drop){drop.onclick=()=>document.getElementById('fFiles').click();
+    drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};
+    drop.ondragleave=()=>drop.classList.remove('drag');
+    drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');onSampleFiles({files:e.dataTransfer.files,value:''});};}
+}
+function submitRequest(editId){
+  const g=id=>document.getElementById(id).value;
+  const copyReq=document.getElementById('fCopy').classList.contains('on');
+  if(!g('fReq').trim()){mErr('Describe what you need in the Request field.');return;}
+  if(!g('fSku').trim()){mErr('Add at least one NH SKU code.');return;}
+  if(g('fDate')<TODAY_STR){mErr('Required-by is in the past — pick a future date.');return;}
+  if(copyReq){const cl=+g('fChar');if(!cl||cl<1){mErr('Set a character limit for the copy, or turn Copy off.');return;}}
+  const skuClean=g('fSku').split(',').map(s=>s.trim()).filter(Boolean).join(', ');
+  if(editId){const r=findReq(editId);const wasDeclined=r.status==='declined';
+    Object.assign(r,{raisedBy:g('fBy'),platform:g('fPlat'),nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
+      dimensions:g('fDim'),sampleLink:g('fSample'),attachments:(sampleFiles.length?sampleFiles.slice():r.attachments||[]),copyReq,charLimit:copyReq?(+g('fChar')||null):null,other:g('fOther')});
+    if(wasDeclined){r.status='pending';r.assignee=null;r.declineReason=null;log(r,currentUser,'created','Edited & re-raised');}
+    else{log(r,currentUser,'created','Updated the request');if(r.assignee)notify(r.assignee,currentUser,r.id,`<b>${fname(currentUser)}</b> updated <b>${esc(r.request.slice(0,30))}</b>`,'query');}
+    DB.save(r);closeModal();render();toast(wasDeclined?'Re-raised':'Request updated',wasDeclined?'Back in the creative queue.':'Changes saved'+(r.assignee?' · '+fname(r.assignee)+' notified.':'.'),null);return;}
+  const maxN=REQUESTS.reduce((m,r)=>Math.max(m,+r.id.split('-')[1]),1043);
+  const nr={id:'CR-'+(maxN+1),raisedBy:g('fBy'),platform:g('fPlat'),nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
+    sampleLink:g('fSample'),attachments:sampleFiles.slice(),dimensions:g('fDim'),copyReq,charLimit:copyReq?(+g('fChar')||null):null,other:g('fOther'),
+    createdAt:iso(today),priority:null,status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
+    extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
+    activity:[{ts:iso(today),actor:g('fBy'),type:'created',note:'Raised the request'}]};
+  REQUESTS.unshift(nr);
+  notify(firstOf('creative').id,g('fBy'),nr.id,`New request from <b>${fname(g('fBy'))}</b>: <b>${esc(nr.request.slice(0,30))}</b>`,'created');
+  DB.save(r);closeModal();render();toast('Request sent','It\'s in the creative Pending queue.',{label:'Ping creative team',href:waLink(firstOf('creative').id,`New request "${nr.request.slice(0,40)}" (${nr.id}) — needed by ${fmtDate(nr.requiredBy)}. Details in the tool.`)});
+}
+
+/* =================== SHELL =================== */
+function demoNote(){
+  if(LIVE)return `<div class="live-note"><span class="ld"></span><div>Live · synced to your Google Sheet. Changes save automatically; use the refresh button up top to pull the latest from teammates.</div></div>`;
+  return `<div class="demo-note"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg><div><b>Preview mode.</b> You're seeing the ${ROLE_LABEL[currentRole]} view with sample data — pick a different person up top. Actions reset on refresh until connected to Google Sheets.</div></div>`;
+}
+function emptyState(t,s){return `<div class="empty"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><h4>${t}</h4><p>${s}</p></div>`;}
+
+function renderSelbar(){
+  const old=document.getElementById('selbar');if(old)old.remove();
+  if(currentRole!=='creative'||creativeTab!=='ongoing'||!selected.size)return;
+  const bar=document.createElement('div');bar.className='selbar';bar.id='selbar';
+  bar.innerHTML=`<span class="sc"><b>${selected.size}</b> selected</span>
+    <button class="btn primary sm" onclick="askPrioritize()">Ask manager to prioritise</button>
+    <button class="btn ghost sm" onclick="selected.clear();render()">Clear</button>`;
+  document.body.appendChild(bar);
+}
+
+const scrim=document.getElementById('scrim'),modalEl=document.getElementById('modal');
+function modal(title,body,footer){modalEl.innerHTML=`<div class="modal-h"><h3>${title}</h3><button class="iconbtn" style="width:30px;height:30px" onclick="closeModal()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div><div class="modal-b">${body}</div><div class="modal-f">${footer}</div>`;scrim.classList.add('on');}
+function closeModal(){scrim.classList.remove('on');}
+scrim.onclick=e=>{if(e.target===scrim)closeModal();};
+
+const drawer=document.getElementById('drawer');
+function renderBell(){const unread=DB.notifs().filter(n=>n.to===currentUser&&!n.read).length;const b=document.getElementById('bellCount');if(unread){b.style.display='grid';b.textContent=unread;}else b.style.display='none';}
+function openDrawer(){const mine=DB.notifs().filter(n=>n.to===currentUser);const body=document.getElementById('drawerBody');
+  const tone={query:'var(--purple)',esc:'var(--coral)',done:'var(--sage)',accept:'var(--gold)',approve:'var(--sage)',decline:'var(--red)',answer:'var(--purple)',created:'var(--blue)',priority:'var(--gold)',prioritize:'var(--purple)'};
+  body.innerHTML=mine.length?mine.map(n=>{const r=findReq(n.reqId);const c=tone[n.kind]||'var(--gold)';
+    return `<div class="notif ${n.read?'':'unread'}"><div class="ni" style="background:${c}22;color:${c}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="nx"><div class="txt">${n.text}</div><div class="tm">${r?r.id+' · ':''}${ago(n.ts)}</div></div></div>`;}).join(''):`<div class="empty" style="padding:60px 20px"><h4>Inbox zero</h4><p>Nothing needs you right now.</p></div>`;
+  DB.notifs().forEach(n=>{if(n.to===currentUser)n.read=true;});if(LIVE)DB.markRead(currentUser);drawer.classList.add('on');renderBell();}
+document.getElementById('bell').onclick=openDrawer;
+document.getElementById('drawerClose').onclick=()=>drawer.classList.remove('on');
+
+function toast(title,msg,wa){const wrap=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<div class="ti2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tt2"><b>${title}</b><p>${msg}</p>${wa?`<div class="row"><a class="btn wa sm" href="${wa.href}" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.1.1.3 0 .5l-.4.5c-.2.2-.3.4-.2.6.1.2.6 1 1.3 1.6.9.8 1.6 1 1.8 1.1.2.1.4.1.5-.1l.6-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>${wa.label}</a></div>`:''}</div><button class="iconbtn" style="width:26px;height:26px;border:0;background:transparent" onclick="this.closest('.toast').remove()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>`;
+  wrap.appendChild(el);setTimeout(()=>{if(el.parentNode){el.style.opacity='0';el.style.transition='.3s';setTimeout(()=>el.remove(),300);}},7000);}
+
+function screenMsg(icon,title,sub,btn){
+  return `<div class="empty" style="padding:80px 20px">${icon}<h4>${title}</h4><p>${sub}</p>${btn||''}</div>`;
+}
+async function boot(){
+  renderHeader();
+  if(!LIVE){ render(); return; }
+  app.innerHTML=screenMsg(
+    `<svg viewBox="0 0 24 24" fill="none" class="spin" style="opacity:1;color:var(--green)"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    'Loading your board…','Fetching the latest from Google Sheets.');
+  try{
+    await DB.load();
+    if(!PEOPLE.find(p=>p.id===currentUser)){currentUser=PEOPLE[0].id;currentRole=PEOPLE[0].role;}
+    render(); startPoll();
+  }catch(err){
+    app.innerHTML=screenMsg(
+      `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+      "Couldn't reach the sheet",
+      "Make sure you're signed into your nathabit.in Google account, that the Apps Script is deployed with JSONP support, and that access is set correctly.",
+      `<button class="btn primary" style="margin-top:14px" onclick="boot()">Try again</button>`);
+  }
+}
+let pollTimer=null;
+function startPoll(){
+  if(pollTimer)return;
+  pollTimer=setInterval(async()=>{
+    if(scrim.classList.contains('on')||drawer.classList.contains('on'))return;
+    const ae=document.activeElement; if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName))return;
+    try{await DB.load(); if(!PEOPLE.find(p=>p.id===currentUser)){currentUser=PEOPLE[0].id;currentRole=PEOPLE[0].role;} render();}catch(e){}
+  },60000);
+}
+
+boot();
+</script>
+</body>
+</html>
