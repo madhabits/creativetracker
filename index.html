@@ -12,7 +12,7 @@
     --bg:#EFECE1; --bg2:#E6E2D4; --surface:#FCFBF6; --surface2:#F2F0E5;
     --border:#DCD7C7; --border-soft:#E6E2D5;
     --text:#213029; --dim:#5E6B60; --mute:#8B9188;
-    --green:#2E7D46; --green-d:#215B34; --green-soft:rgba(46,125,70,.12);
+    --green:#C05028; --green-d:#9E3F1E; --green-soft:rgba(192,80,40,.12);
     --gold:#B8871F; --gold-soft:rgba(184,135,31,.15);
     --sage:#3E9E6A; --sage-soft:rgba(62,158,106,.14);
     --blue:#3E7CB1; --blue-soft:rgba(62,124,177,.14);
@@ -20,14 +20,14 @@
     --red:#C0453E; --red-soft:rgba(192,69,62,.13);
     --purple:#9C4E70; --purple-soft:rgba(156,78,112,.13);
     --wa:#25D366;
-    --shadow:0 14px 32px rgba(45,55,40,.14);
+    --shadow:0 14px 32px rgba(80,45,30,.14);
     --r:14px;
   }
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
     background:
-      radial-gradient(1100px 520px at 88% -8%, rgba(46,125,70,.07), transparent 60%),
+      radial-gradient(1100px 520px at 88% -8%, rgba(192,80,40,.07), transparent 60%),
       radial-gradient(900px 480px at 4% 108%, rgba(184,135,31,.06), transparent 60%),
       var(--bg);
     color:var(--text); font-family:Inter,system-ui,sans-serif; font-size:14px; line-height:1.5;
@@ -321,8 +321,8 @@
 
 <header class="top">
   <div class="brand">
-    <div class="leaf"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 3-11 9-13-1 8-5 12-9 13Zm0 0c0-6-3-11-9-13 1 8 5 12 9 13Z" stroke="#E9AE54" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
-    <div><div class="name">NatHabit</div><div class="sub">Creative Requests</div></div>
+    <img src="data:image/png;base64,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" alt="nat habit" style="height:34px;width:auto;display:block"/>
+    <div style="border-left:1px solid var(--border);padding-left:11px;margin-left:1px"><div class="name">Creative Requests</div><div class="sub">Workflow</div></div>
   </div>
   <div class="grow"></div>
   <button class="iconbtn" id="refresh" title="Refresh from the sheet">
@@ -530,6 +530,19 @@ function notify(to,actor,reqId,text,kind){DB.pushNotif({id:uid('n'),to,ts:iso(to
 function waLink(id,msg){return 'https://wa.me/'+byId(id).phone+'?text='+encodeURIComponent(msg);}
 function findReq(id){return REQUESTS.find(r=>r.id===id);}
 
+/* ---- date-change model (reuses prepone=earlier / extension=later objects) ----
+   status: 'peer' (with the other person) | 'esc:<managerId>' (escalated) | 'approved' | 'declined' */
+function activeDC(r){
+  if(r.prepone&&r.prepone.status&&r.prepone.status!=='approved'&&r.prepone.status!=='declined')return {o:r.prepone,which:'prepone',dir:'earlier'};
+  if(r.extension&&r.extension.status&&r.extension.status!=='approved'&&r.extension.status!=='declined')return {o:r.extension,which:'extension',dir:'later'};
+  return null;
+}
+function dcCounterparty(r,dc){return dc.o.by===r.raisedBy?r.assignee:r.raisedBy;}
+function dcIsPeer(dc){return dc.o.status==='peer';}
+function dcDecider(dc){const s=dc.o.status||'';return s.indexOf('esc:')===0?s.slice(4):null;}
+function applyDC(r,dc){dc.o.status='approved';r.requiredBy=dc.o.proposedDate;r.agreedDeadline=dc.o.proposedDate;}
+function dcLabel(dc){return dc.dir==='earlier'?'prepone':'postpone';}
+
 /* ---- state ---- */
 let currentRole='ecom', currentUser=firstOf('ecom').id;
 let creativeTab='pending', ecomFilter='all', searchQuery='';
@@ -587,8 +600,8 @@ function pendency(r){
   const p=[];
   if(r.status==='pending')p.push(['Awaiting acceptance','pend']);
   if(r.status==='pending_approval')p.push(['Ecom sign-off','apr']);
-  if(r.extension&&r.extension.status==='pending')p.push(['Extension','ext']);
-  if(r.prepone&&r.prepone.status==='pending')p.push(['Prepone','pre']);
+  const dc=activeDC(r);
+  if(dc){const lbl=dc.dir==='earlier'?'Prepone':'Postpone';p.push([dcIsPeer(dc)?lbl+' — with peer':lbl+' — escalated', dc.dir==='earlier'?'pre':'ext']);}
   if(r.prioritizeReq)p.push(['Prioritise','prio']);
   if(r.queries.some(q=>!q.answer))p.push(['Open query','q']);
   if(r.status!=='completed'&&r.status!=='declined'&&isLate(r.agreedDeadline||r.requiredBy))p.push(['Overdue','late']);
@@ -596,8 +609,8 @@ function pendency(r){
   return `<div class="pendwrap">${p.map(([t,c])=>`<span class="pend p-${c}">${t}</span>`).join('')}</div>`;
 }
 function flags(r){let out='';
-  if(r.extension&&r.extension.status==='pending')out+=`<span class="chip flag">Extension requested</span>`;
-  if(r.prepone&&r.prepone.status==='pending')out+=`<span class="chip flag">Prepone requested</span>`;
+  const dc=activeDC(r);
+  if(dc){const lbl=dc.dir==='earlier'?'Prepone':'Postpone';out+=`<span class="chip flag">${lbl} ${dcIsPeer(dc)?'requested':'escalated'}</span>`;}
   if(r.prioritizeReq)out+=`<span class="chip flagp">Prioritise requested</span>`;
   if(r.queries.some(q=>!q.answer))out+=`<span class="chip flagp">Open query</span>`;
   return out;}
@@ -624,39 +637,76 @@ function briefBlock(r){
   <div class="brief" style="border-top:0;padding-top:6px;font-size:12px">${r.sampleLink?`Samples: <a href="https://${r.sampleLink}" target="_blank">${r.sampleLink} ↗</a>`:(r.attachments&&r.attachments.length?'':'<span style="color:var(--mute)">No sample images attached</span>')}${r.deliverable?` &nbsp;·&nbsp; <b style="color:var(--sage)">Delivered:</b> <a href="https://${r.deliverable}" target="_blank">${r.deliverable} ↗</a>`:''}</div>
   ${r.attachments&&r.attachments.length?`<div class="brief" style="border-top:0;padding-top:6px;font-size:12px">Attached: ${r.attachments.map(f=>`<span class="attchip">📎 ${esc(f.name)}</span>`).join(' ')}</div>`:''}
   ${r.status==='declined'?`<div class="brief" style="color:var(--red)"><b>Declined:</b> ${esc(r.declineReason)}</div>`:''}
-  ${r.extension&&r.extension.status==='pending'?`<div class="brief" style="color:var(--coral)"><b>Extension asked:</b> to ${fmtDate(r.extension.proposedDate)} — ${esc(r.extension.reason)}</div>`:''}
-  ${r.prepone&&r.prepone.status==='pending'?`<div class="brief" style="color:var(--blue)"><b>Prepone asked:</b> to ${fmtDate(r.prepone.proposedDate)} — ${esc(r.prepone.reason)}</div>`:''}
+  ${(()=>{const dc=activeDC(r);if(!dc)return '';const lbl=dc.dir==='earlier'?'Prepone':'Postpone';const stage=dcIsPeer(dc)?('awaiting '+fname(dcCounterparty(r,dc))):('escalated to '+fname(dcDecider(dc)));return `<div class="brief" style="color:${dc.dir==='earlier'?'var(--blue)':'var(--coral)'}"><b>${lbl} requested by ${fname(dc.o.by)}:</b> to ${fmtDate(dc.o.proposedDate)} — ${esc(dc.o.reason)} <span style="color:var(--mute)">· ${stage}</span></div>`;})()}
   ${queryHTML(r)}
   <details class="more"><summary><svg class="cv" width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg> Activity trail (${r.activity.length})</summary>${trailHTML(r)}</details>`;
 }
 
-/* ---- shared expandable table ---- */
+/* ---- shared expandable table (sortable) ---- */
+let sortKey='requiredBy', sortDir=1;
+function setSort(k){ if(sortKey===k)sortDir=-sortDir; else{sortKey=k;sortDir=1;} render(); }
+function sortList(list){
+  const val=r=>{
+    if(sortKey==='requiredBy')return new Date(r.agreedDeadline||r.requiredBy).getTime()||0;
+    if(sortKey==='platform')return (r.platform||'').toLowerCase();
+    if(sortKey==='raisedBy')return byId(r.raisedBy).name.toLowerCase();
+    if(sortKey==='assignee')return (r.assignee?byId(r.assignee).name:'~').toLowerCase();
+    if(sortKey==='status')return r.status||'';
+    if(sortKey==='id')return r.id;
+    return '';
+  };
+  return list.slice().sort((a,b)=>{const va=val(a),vb=val(b);return (va<vb?-1:va>vb?1:0)*sortDir;});
+}
+function sortArrow(k){return sortKey===k?`<span style="color:var(--green)">${sortDir>0?'▲':'▼'}</span>`:`<span style="opacity:.25">▽</span>`;}
+function sh(k,label){return `<th onclick="setSort('${k}')" style="cursor:pointer;user-select:none;white-space:nowrap">${label} ${sortArrow(k)}</th>`;}
 function taskTable(list,viewer){
   if(!list.length)return emptyState(searchQuery?'No matches':'Nothing here',searchQuery?'Nothing matches “'+esc(searchQuery)+'”. Clear the search to see everything.':'No requests in this view.');
+  list=sortList(list);
   return `<div class="tablewrap"><table>
-    <thead><tr><th>ID</th><th>Platform</th><th>Raised by</th><th>NH SKU</th><th>Request</th><th>Status</th><th>Complete by</th><th>Pendency</th><th></th></tr></thead>
+    <thead><tr>${sh('id','ID')}${sh('platform','Channel')}${sh('raisedBy','Raised by')}<th>NH SKU</th><th>Request</th>${sh('assignee','With (creative)')}${sh('status','Status')}${sh('requiredBy','Complete by')}<th>Pendency</th><th></th></tr></thead>
     <tbody>${list.map(r=>{
       const op=expanded.has(r.id);
       const attn=viewer==='ecom'&&r.status==='pending_approval';
       return `<tr class="expandrow ${op?'open':''} ${attn?'attn':''}" onclick="toggleRow('${r.id}')">
         <td class="mono" style="color:var(--mute)">${r.id}</td>
-        <td>${r.platform}</td>
+        <td>${esc(r.platform)}</td>
         <td>${fname(r.raisedBy)}</td>
         <td class="mono" style="font-size:11px">${esc(r.nhSku||'—')}</td>
-        <td><b style="font-weight:600">${esc(r.request.length>40?r.request.slice(0,40)+'…':r.request)}</b></td>
+        <td><b style="font-weight:600">${esc(r.request.length>38?r.request.slice(0,38)+'…':r.request)}</b></td>
+        <td>${r.assignee?miniAv(r.assignee)+fname(r.assignee):'<span style="color:var(--mute)">Unassigned</span>'}</td>
         <td>${statusChip(r.status)}</td>
         <td class="${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</td>
         <td>${pendency(r)}</td>
         <td><span class="chev">▸</span></td>
       </tr>
-      ${op?`<tr><td class="detailcell" colspan="9"><div class="inner">${briefBlock(r)}<div class="actions" onclick="event.stopPropagation()">${detailActions(r,viewer)}</div></div></td></tr>`:''}`;
+      ${op?`<tr><td class="detailcell" colspan="10"><div class="inner">${briefBlock(r)}<div class="actions" onclick="event.stopPropagation()">${detailActions(r,viewer)}</div></div></td></tr>`:''}`;
     }).join('')}</tbody></table></div>`;
 }
-function toggleRow(id){expanded.has(id)?expanded.delete(id):expanded.add(id);render();}
+function queriesPanel(list){
+  const items=[];
+  list.forEach(r=>r.queries.forEach(q=>items.push({r,q})));
+  items.sort((a,b)=>(a.q.answer?1:0)-(b.q.answer?1:0) || new Date(b.q.ts)-new Date(a.q.ts));
+  if(!items.length)return emptyState('No queries','When creatives ask a question on your requests, it shows up here to reply.');
+  return items.map(({r,q})=>`<div class="card">
+    <div class="card-h"><div class="tt"><div class="rid mono">${r.id} · ${esc(r.platform)}</div><h3>${esc(r.request.length>60?r.request.slice(0,60)+'…':r.request)}</h3>
+    <div class="chips">${statusChip(r.status)}${q.answer?'<span class="chip st-completed"><span class="d"></span>Replied</span>':'<span class="chip st-pending_approval"><span class="d"></span>Needs reply</span>'}</div></div></div>
+    <div class="qthread" style="margin-top:13px"><div class="qh"><svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5Z" stroke="#9C4E70" stroke-width="1.5" stroke-linejoin="round"/></svg>Query from ${fname(q.from)}</div>
+      <div class="qmsg">${esc(q.text)}</div>
+      ${q.answer?`<div class="qmsg ans">↳ <b>${fname(q.answeredBy)}:</b> ${esc(q.answer)}</div>`:''}</div>
+    <div class="actions">${q.answer?`<button class="btn sm" onclick="answerQuery('${r.id}','${q.id}')">Edit reply</button>`:`<button class="btn good" onclick="answerQuery('${r.id}','${q.id}')">Reply</button>`}
+      <a class="btn wa sm" target="_blank" href="${waLink(q.from,'Re "'+r.request.slice(0,40)+'" ('+r.id+'): ')}">WhatsApp ${fname(q.from)}</a></div>
+  </div>`).join('');
+}
 
 function detailActions(r,viewer){
   let b='';
   if(viewer==='ecom'){
+    const dc=activeDC(r);
+    if(dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser){
+      b+=`<span style="align-self:center;color:var(--coral);font-size:12.5px;font-weight:600">${fname(dc.o.by)} asked to ${dcLabel(dc)} to ${fmtDate(dc.o.proposedDate)}</span>`;
+      b+=`<button class="btn good sm" onclick="peerApprove('${r.id}')">Approve</button>`;
+      b+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate</button>`;
+    }
     r.queries.filter(q=>!q.answer&&q.to===r.raisedBy).forEach(q=>b+=`<button class="btn good sm" onclick="answerQuery('${r.id}','${q.id}')">Answer query</button>`);
     if(r.status==='pending_approval'){
       b+=`<a class="btn sm" href="https://${r.deliverable}" target="_blank">Review files ↗</a>`;
@@ -665,20 +715,21 @@ function detailActions(r,viewer){
     }
     if(r.status==='pending'||r.status==='ongoing'){
       b+=`<button class="btn sm" onclick="openUpdate('${r.id}')">Update request</button>`;
+      b+=`<button class="btn sm" onclick="pingChooser('${r.id}')">Ping creative</button>`;
       b+=`<button class="btn sm" onclick="remind('${r.id}')">Send reminder</button>`;
-      if(r.status==='ongoing'&&!(r.prepone&&r.prepone.status==='pending'))b+=`<button class="btn warn sm" onclick="openPrepone('${r.id}')">Request prepone</button>`;
+      if(r.status==='ongoing'&&!dc){
+        b+=`<button class="btn warn sm" onclick="openDateChange('${r.id}','earlier')">Request prepone</button>`;
+        b+=`<button class="btn warn sm" onclick="openDateChange('${r.id}','later')">Request postpone</button>`;
+      }
     }
     if(r.status==='declined')b+=`<button class="btn sm" onclick="openUpdate('${r.id}')">Edit &amp; re-raise</button>`;
     if(r.status==='completed')b+=`<a class="btn sm" href="https://${r.deliverable}" target="_blank">Open delivered files ↗</a>`;
   }
   if(viewer==='manager'){
-    if(r.extension&&r.extension.status==='pending'){
-      b+=`<button class="btn good sm" onclick="approveExt('${r.id}')">Approve · ${fmtDate(r.extension.proposedDate)}</button>`;
-      b+=`<button class="btn danger sm" onclick="declineExt('${r.id}')">Decline extension</button>`;
-    }
-    if(r.prepone&&r.prepone.status==='pending'){
-      b+=`<button class="btn good sm" onclick="approvePre('${r.id}')">Approve · ${fmtDate(r.prepone.proposedDate)}</button>`;
-      b+=`<button class="btn danger sm" onclick="declinePre('${r.id}')">Decline prepone</button>`;
+    const dc=activeDC(r);
+    if(dc&&dcDecider(dc)===currentUser){
+      b+=`<button class="btn good sm" onclick="mgrApproveDC('${r.id}')">Approve · ${fmtDate(dc.o.proposedDate)}</button>`;
+      b+=`<button class="btn danger sm" onclick="mgrDeclineDC('${r.id}')">Decline — hold ${fmtDate(r.requiredBy)}</button>`;
     }
     if(r.status!=='completed'&&r.status!=='declined'){
       b+=`<span style="align-self:center;color:var(--mute);font-size:12px;margin-right:2px">Set priority:</span>`;
@@ -712,14 +763,17 @@ function viewEcom(){
       <div class="stat s"><div class="n">${counts.completed}</div><div class="k">Completed</div></div>
     </div>
     ${searchBar()}
+    ${isMgr?`<div class="section-t" id="ecomDecT">Needs your decision <span class="ct" id="ecomDecCt">0</span></div><div id="ecomReqs"></div>`:''}
     <div class="filters" id="filters"></div>
     <div id="tbl"></div>`;
+  if(isMgr){const dp=decisionsPanel();document.getElementById('ecomReqs').innerHTML=dp.html;document.getElementById('ecomDecCt').textContent=dp.n;}
   document.getElementById('newReq').onclick=()=>openRequestForm(null);
   const f=document.getElementById('filters');
-  const opts=[['all','All'],['pending','Pending'],['ongoing','Ongoing'],['pending_approval','Awaiting sign-off'],['completed','Completed']];
-  f.innerHTML=opts.map(([k,l])=>`<button class="fchip ${ecomFilter===k?'on':''}" data-f="${k}">${l}${k!=='all'?` · ${counts[k]||0}`:''}</button>`).join('');
+  const opts=[['all','All'],['pending','Pending'],['ongoing','Ongoing'],['pending_approval','Awaiting sign-off'],['completed','Completed'],['queries','Queries']];
+  f.innerHTML=opts.map(([k,l])=>`<button class="fchip ${ecomFilter===k?'on':''}" data-f="${k}">${l}${k==='queries'?(openQ?` · ${openQ}`:''):(k!=='all'?` · ${counts[k]||0}`:'')}</button>`).join('');
   f.querySelectorAll('button').forEach(b=>b.onclick=()=>{ecomFilter=b.dataset.f;render();});
-  document.getElementById('tbl').innerHTML=taskTable(filtered,'ecom');
+  if(ecomFilter==='queries')document.getElementById('tbl').innerHTML=queriesPanel(all);
+  else document.getElementById('tbl').innerHTML=taskTable(filtered,'ecom');
 }
 
 /* ---------------- CREATIVE ---------------- */
@@ -763,9 +817,16 @@ function creativeCard(r,mode){
     if(r.status==='pending_approval'){
       acts=`<span style="align-self:center;color:var(--purple);font-size:12.5px;font-weight:600">Delivered — waiting on ${fname(r.raisedBy)} to approve</span><button class="btn sm" onclick="remindApproval('${r.id}')">Nudge ecom</button>`;
     }else{
-      acts=`<button class="btn good" onclick="openComplete('${r.id}')">Mark complete</button>`;
-      acts+=`<button class="btn sm" onclick="openQuery('${r.id}')">Raise query</button>`;
-      if(!(r.extension&&r.extension.status==='pending'))acts+=`<button class="btn warn sm" onclick="openExtension('${r.id}')">Ask for extension</button>`;
+      const dc=activeDC(r);
+      if(dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser){
+        acts=`<span style="align-self:center;color:var(--coral);font-size:12.5px;font-weight:600">${fname(dc.o.by)} asked to ${dcLabel(dc)} to ${fmtDate(dc.o.proposedDate)}</span>`;
+        acts+=`<button class="btn good sm" onclick="peerApprove('${r.id}')">Approve</button>`;
+        acts+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate</button>`;
+      }else{
+        acts=`<button class="btn good" onclick="openComplete('${r.id}')">Mark complete</button>`;
+        acts+=`<button class="btn sm" onclick="openQuery('${r.id}')">Raise query</button>`;
+        if(!dc)acts+=`<button class="btn warn sm" onclick="openDateChange('${r.id}','later')">Ask for more time</button>`;
+      }
     }
   }
   return `<div class="card ${on?'sel':''} ${r.status==='pending_approval'?'attn':''}">
@@ -788,49 +849,42 @@ function creativeCard(r,mode){
 function toggleSel(id){selected.has(id)?selected.delete(id):selected.add(id);render();}
 
 /* ---------------- MANAGER ---------------- */
+function decisionsPanel(){
+  const all=DB.requests();
+  const dcs=all.filter(r=>{const dc=activeDC(r);return dc&&dcDecider(dc)===currentUser;});
+  const prio=all.filter(r=>r.prioritizeReq&&r.prioritizeBy===currentUser);
+  const n=dcs.length+prio.length;
+  let R='';
+  dcs.forEach(r=>{const dc=activeDC(r);const lbl=dc.dir==='earlier'?'Prepone':'Postpone';const cls=dc.dir==='earlier'?'pre':'ext';const cp=dcCounterparty(r,dc);
+    R+=`<div class="reqbox ${cls}"><div class="rh"><span class="tag">${lbl} · escalated</span><b>${esc(r.request.slice(0,52))}</b></div>
+    <div class="line"><b>${fname(dc.o.by)}</b> and <b>${cp?fname(cp):'—'}</b> couldn't agree — your call · <span class="mono">${r.id}</span></div>
+    <div class="datechg ${dc.dir==='earlier'?'pre':''}"><span class="old">${fmtDate(r.requiredBy)}</span> → <span class="new">${fmtDate(dc.o.proposedDate)}</span></div>
+    <div class="line">${esc(dc.o.reason)}</div>
+    <div class="actions" style="border-top:0;padding-top:11px;margin-top:6px"><button class="btn good sm" onclick="mgrApproveDC('${r.id}')">Approve — ${fmtDate(dc.o.proposedDate)}</button><button class="btn danger sm" onclick="mgrDeclineDC('${r.id}')">Decline — hold ${fmtDate(r.requiredBy)}</button></div></div>`;});
+  if(prio.length){
+    R+=`<div class="reqbox prio"><div class="rh"><span class="tag">Prioritise</span><b>${prio.length} task${prio.length>1?'s':''} sent to you for a priority call</b></div>
+    <div class="line" style="margin-bottom:8px">Set the order they should be worked in:</div>
+    ${prio.map(r=>`<div class="prioline"><div class="pl">${esc(r.request.slice(0,44))}<div class="mono">${r.id} · ${r.assignee?fname(r.assignee):'unassigned'} · req. ${fmtDate(r.requiredBy)}</div></div>
+      <div class="prioset"><button class="btn danger sm" onclick="setPrio('${r.id}','high')">High</button><button class="btn sm" onclick="setPrio('${r.id}','med')">Med</button><button class="btn sm" onclick="setPrio('${r.id}','low')">Low</button></div></div>`).join('')}</div>`;}
+  return {n,html:n?R:emptyState('All clear','Nothing escalated to you right now.')};
+}
 function viewManager(){
   const all=DB.requests();
-  const ext=all.filter(r=>r.extension&&r.extension.status==='pending');
-  const pre=all.filter(r=>r.prepone&&r.prepone.status==='pending');
-  const prio=all.filter(r=>r.prioritizeReq);
-  const decisions=ext.length+pre.length+prio.length;
-
-  // group prioritise requests by requester
-  const prioGroups={};
-  prio.forEach(r=>{(prioGroups[r.prioritizeBy]=prioGroups[r.prioritizeBy]||[]).push(r);});
-
+  const dp=decisionsPanel();
   app.innerHTML=`${demoNote()}
     <div class="pagehead"><div><div class="eyebrow">Creative manager · ${esc(byId(currentUser).name)}</div><h1>Requests &amp; the board</h1>
-      <p class="lede">Rule on extensions and prepone asks, set priorities when the team needs direction, and keep an eye on every task in one place.</p></div></div>
+      <p class="lede">The team sorts most date changes between themselves — you only step in on escalations. Set priorities when asked, and keep an eye on every task in one place.</p></div></div>
     <div class="stats">
-      <div class="stat c"><div class="n">${ext.length}</div><div class="k">Extension asks</div></div>
-      <div class="stat b"><div class="n">${pre.length}</div><div class="k">Prepone asks</div></div>
-      <div class="stat p"><div class="n">${prio.length}</div><div class="k">To prioritise</div></div>
+      <div class="stat c"><div class="n">${dp.n}</div><div class="k">Awaiting your decision</div></div>
       <div class="stat g"><div class="n">${all.filter(r=>r.status==='ongoing').length}</div><div class="k">Ongoing</div></div>
+      <div class="stat b"><div class="n">${all.filter(r=>r.status==='pending').length}</div><div class="k">Pending</div></div>
+      <div class="stat s"><div class="n">${all.filter(r=>r.status==='completed').length}</div><div class="k">Completed</div></div>
     </div>
-    <div class="section-t">Needs your decision <span class="ct">${decisions}</span></div>
-    <div id="reqs"></div>
+    <div class="section-t">Needs your decision <span class="ct">${dp.n}</span></div>
+    <div id="reqs">${dp.html}</div>
     <div class="section-t">The board — all tasks <span class="ct">${all.length}</span></div>
     ${searchBar()}
     <div id="board"></div>`;
-
-  let R='';
-  ext.forEach(r=>{R+=`<div class="reqbox ext"><div class="rh"><span class="tag">Extension</span><b>${esc(r.request.slice(0,52))}</b></div>
-    <div class="line"><b>${fname(r.extension.by)}</b> can't hit the current deadline · <span class="mono">${r.id}</span></div>
-    <div class="datechg"><span class="old">${fmtDate(r.requiredBy)}</span> → <span class="new">${fmtDate(r.extension.proposedDate)}</span></div>
-    <div class="line">${esc(r.extension.reason)}</div>
-    <div class="actions" style="border-top:0;padding-top:11px;margin-top:6px"><button class="btn good sm" onclick="approveExt('${r.id}')">Approve new date</button><button class="btn danger sm" onclick="declineExt('${r.id}')">Decline — hold original</button></div></div>`;});
-  pre.forEach(r=>{R+=`<div class="reqbox pre"><div class="rh"><span class="tag">Prepone</span><b>${esc(r.request.slice(0,52))}</b></div>
-    <div class="line"><b>${fname(r.prepone.by)}</b> (ecom) wants this earlier · <span class="mono">${r.id}</span></div>
-    <div class="datechg pre"><span class="old">${fmtDate(r.requiredBy)}</span> → <span class="new">${fmtDate(r.prepone.proposedDate)}</span></div>
-    <div class="line">${esc(r.prepone.reason)}</div>
-    <div class="actions" style="border-top:0;padding-top:11px;margin-top:6px"><button class="btn good sm" onclick="approvePre('${r.id}')">Approve earlier date</button><button class="btn danger sm" onclick="declinePre('${r.id}')">Decline — hold original</button></div></div>`;});
-  Object.entries(prioGroups).forEach(([by,tasks])=>{
-    R+=`<div class="reqbox prio"><div class="rh"><span class="tag">Prioritise</span><b>${fname(by)} needs a call on ${tasks.length} task${tasks.length>1?'s':''}</b></div>
-    <div class="line" style="margin-bottom:8px">Set the order they should be worked in:</div>
-    ${tasks.map(r=>`<div class="prioline"><div class="pl">${esc(r.request.slice(0,44))}<div class="mono">${r.id} · req. ${fmtDate(r.requiredBy)}</div></div>
-      <div class="prioset"><button class="btn danger sm" onclick="setPrio('${r.id}','high')">High</button><button class="btn sm" onclick="setPrio('${r.id}','med')">Med</button><button class="btn sm" onclick="setPrio('${r.id}','low')">Low</button></div></div>`).join('')}</div>`;});
-  document.getElementById('reqs').innerHTML=decisions?R:emptyState('All clear','No extensions, prepones, or prioritisation calls waiting on you.');
   document.getElementById('board').innerHTML=taskTable(all.filter(matchesSearch),'manager');
 }
 
@@ -947,10 +1001,72 @@ function doExtension(id){const r=findReq(id);
   DB.save(r);closeModal();render();toast('Sent to manager',fname(mgr.id)+' will approve or decline.',{label:'Ping '+fname(mgr.id),href:waLink(mgr.id,`Extension ask on "${r.request.slice(0,40)}" (${r.id}) → ${fmtDate(r.extension.proposedDate)}. Reason: ${r.extension.reason}`)});}
 
 function askPrioritize(){const ids=[...selected];if(!ids.length)return;
-  ids.forEach(id=>{const r=findReq(id);r.prioritizeReq=true;r.prioritizeBy=currentUser;log(r,currentUser,'esc','Asked manager to prioritise');DB.save(r);});
-  const mgr=mgrCreative();notify(mgr.id,currentUser,ids[0],`<b>${fname(currentUser)}</b> asked you to prioritise <b>${ids.length} task${ids.length>1?'s':''}</b>`,'prioritize');
-  const n=ids.length;selected.clear();render();
-  toast('Sent to manager','Asked '+fname(mgr.id)+' to prioritise '+n+' task'+(n>1?'s':'')+'.',{label:'Ping '+fname(mgr.id),href:waLink(mgr.id,`Juggling ${n} tasks — can you set priority order? IDs: ${ids.join(', ')}`)});}
+  const cm=firstOf('creative_manager'), em=firstOf('ecom_manager');
+  modal('Ask a manager to prioritise',`<p class="hint" style="margin:-2px 0 12px">Send these ${ids.length} task${ids.length>1?'s':''} to whichever manager should set the order:</p>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn" style="justify-content:flex-start;padding:12px 14px" ${cm?'':'disabled'} onclick="doPrioritize('${cm?cm.id:''}')">${cm?'Creative manager · '+esc(cm.name):'Creative manager (none in team)'}</button>
+      <button class="btn" style="justify-content:flex-start;padding:12px 14px" ${em?'':'disabled'} onclick="doPrioritize('${em?em.id:''}')">${em?'Ecom manager · '+esc(em.name):'Ecom manager (none in team)'}</button>
+    </div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button>`);}
+function doPrioritize(mgrId){const ids=[...selected];if(!ids.length||!mgrId){closeModal();return;}
+  ids.forEach(id=>{const r=findReq(id);r.prioritizeReq=true;r.prioritizeBy=mgrId;log(r,currentUser,'esc','Asked '+fname(mgrId)+' to prioritise');DB.save(r);});
+  notify(mgrId,currentUser,ids[0],`<b>${fname(currentUser)}</b> asked you to prioritise <b>${ids.length} task${ids.length>1?'s':''}</b>`,'prioritize');
+  const n=ids.length;selected.clear();closeModal();render();
+  toast('Sent to '+fname(mgrId),'Asked them to set the priority order for '+n+' task'+(n>1?'s':'')+'.',{label:'Ping '+fname(mgrId),href:waLink(mgrId,`Juggling ${n} tasks — can you set priority order? IDs: ${ids.join(', ')}`)});}
+
+/* ---- date change: peer first, then escalate to a chosen manager ---- */
+function openDateChange(id,dir){const r=findReq(id);
+  const cur=new Date(r.agreedDeadline||r.requiredBy);
+  let minD,maxD='',def,title;
+  if(dir==='earlier'){minD=TODAY_STR;maxD=ymd(new Date(cur.getTime()-DAY));def=ymd(new Date(Math.max(startOfToday.getTime(),cur.getTime()-3*DAY)));title='Request prepone (earlier)';}
+  else{minD=ymd(new Date(cur.getTime()+DAY));def=ymd(new Date(cur.getTime()+2*DAY));title='Request postpone (more time)';}
+  const cp=(currentUser===r.raisedBy)?r.assignee:r.raisedBy;
+  modal(title+` — ${esc(r.request.slice(0,34))}`,`<div class="field"><label>New date <span class="req">*</span></label><input type="date" id="dcDate" min="${minD}" ${maxD?`max="${maxD}"`:''} value="${def}"><div class="hint">Current: ${fmtDate(r.agreedDeadline||r.requiredBy)}. This goes to <b>${cp?esc(fname(cp)):'the other person'}</b> first — they can approve, or escalate to a manager.</div></div><div class="field"><label>Why <span class="req">*</span></label><textarea id="dcWhy" placeholder="A quick reason helps them decide"></textarea></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn warn" onclick="doDateChange('${id}','${dir}')">Send to ${cp?esc(fname(cp)):'the other person'}</button>`);}
+function doDateChange(id,dir){const r=findReq(id);
+  if(r.status!=='ongoing'){closeModal();render();toast('Changed','This task isn\u2019t in progress anymore.',null);return;}
+  if(activeDC(r)){closeModal();render();toast('Already pending','A date change is already in progress on this one.',null);return;}
+  const dv=document.getElementById('dcDate').value, why=document.getElementById('dcWhy').value.trim();
+  const cur=new Date(r.agreedDeadline||r.requiredBy);
+  if(!dv){mErr('Pick the new date.');return;}
+  if(dir==='earlier'&&(dv<TODAY_STR||new Date(dv)>=cur)){mErr('Prepone must be earlier than the current deadline and not in the past.');return;}
+  if(dir==='later'&&new Date(dv)<=cur){mErr('Postpone must be later than the current deadline.');return;}
+  if(!why){mErr('Add a reason.');return;}
+  const obj={by:currentUser,proposedDate:new Date(dv).toISOString(),reason:why,status:'peer',ts:iso(today)};
+  if(dir==='earlier'){r.prepone=obj;r.extension=null;}else{r.extension=obj;r.prepone=null;}
+  const cp=(currentUser===r.raisedBy)?r.assignee:r.raisedBy, lbl=dir==='earlier'?'prepone':'postpone';
+  log(r,currentUser,'esc','Requested '+lbl+' to '+fmtDate(obj.proposedDate));
+  if(cp)notify(cp,currentUser,id,`<b>${fname(currentUser)}</b> requested a ${lbl} on <b>${esc(r.request.slice(0,30))}</b> to ${fmtDate(obj.proposedDate)} — approve or escalate`,'esc');
+  DB.save(r);closeModal();render();toast('Sent',(cp?fname(cp):'The other person')+' can approve it or escalate to a manager.',cp?{label:'Ping '+fname(cp),href:waLink(cp,`${lbl} ask on "${r.request.slice(0,40)}" (${r.id}) → ${fmtDate(obj.proposedDate)}. Reason: ${why}`)}:null);}
+function peerApprove(id){const r=findReq(id);const dc=activeDC(r);if(!dc||!dcIsPeer(dc)){render();return;}
+  applyDC(r,dc);const lbl=dcLabel(dc);
+  log(r,currentUser,'approve','Approved the '+lbl+' to '+fmtDate(dc.o.proposedDate));
+  notify(dc.o.by,currentUser,id,`<b>${fname(currentUser)}</b> approved your ${lbl} on <b>${esc(r.request.slice(0,30))}</b> — now ${fmtDate(dc.o.proposedDate)}`,'approve');
+  DB.save(r);render();toast('Approved','Deadline moved to '+fmtDate(dc.o.proposedDate)+'.',{label:'Ping '+fname(dc.o.by),href:waLink(dc.o.by,`Agreed — "${r.request.slice(0,40)}" (${r.id}) now ${fmtDate(dc.o.proposedDate)}.`)});}
+function peerEscalate(id){const r=findReq(id);const dc=activeDC(r);if(!dc)return;
+  const cm=firstOf('creative_manager'), em=firstOf('ecom_manager');
+  modal('Escalate — who should decide?',`<p class="hint" style="margin:-2px 0 12px">You and ${fname(dc.o.by)} don\u2019t agree on the date. Pick who makes the call — both managers get notified.</p>
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <button class="btn" style="justify-content:flex-start;padding:12px 14px" ${cm?'':'disabled'} onclick="doEscalate('${id}','${cm?cm.id:''}')">${cm?'Creative manager · '+esc(cm.name):'Creative manager (none in team)'}</button>
+      <button class="btn" style="justify-content:flex-start;padding:12px 14px" ${em?'':'disabled'} onclick="doEscalate('${id}','${em?em.id:''}')">${em?'Ecom manager · '+esc(em.name):'Ecom manager (none in team)'}</button>
+    </div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button>`);}
+function doEscalate(id,mgrId){const r=findReq(id);const dc=activeDC(r);if(!dc||!mgrId){closeModal();return;}
+  dc.o.status='esc:'+mgrId;const lbl=dcLabel(dc);
+  log(r,currentUser,'esc','Escalated the '+lbl+' to '+fname(mgrId));
+  const cm=firstOf('creative_manager'), em=firstOf('ecom_manager');
+  [cm,em].forEach(m=>{if(m)notify(m.id,currentUser,id,`${m.id===mgrId?'Decision needed — ':''}<b>${fname(currentUser)}</b> escalated a ${lbl} on <b>${esc(r.request.slice(0,30))}</b> (to ${fmtDate(dc.o.proposedDate)})`,'esc');});
+  DB.save(r);closeModal();render();toast('Escalated',fname(mgrId)+' will decide — both managers notified.',{label:'Ping '+fname(mgrId),href:waLink(mgrId,`Need a call on "${r.request.slice(0,40)}" (${r.id}): ${lbl} to ${fmtDate(dc.o.proposedDate)}. ${fname(dc.o.by)} and ${fname(dcCounterparty(r,dc)||dc.o.by)} couldn't agree.`)});}
+function mgrApproveDC(id){const r=findReq(id);const dc=activeDC(r);if(!dc){render();return;}
+  applyDC(r,dc);const lbl=dcLabel(dc);const cp=dcCounterparty(r,dc);
+  log(r,currentUser,'approve','Approved '+lbl+' to '+fmtDate(dc.o.proposedDate));
+  [dc.o.by,cp].forEach(u=>{if(u)notify(u,currentUser,id,`<b>${fname(currentUser)}</b> approved the ${lbl} on <b>${esc(r.request.slice(0,30))}</b> — now ${fmtDate(dc.o.proposedDate)}`,'approve');});
+  DB.save(r);render();toast('Approved','New deadline '+fmtDate(dc.o.proposedDate)+' locked. Both sides notified.',null);}
+function mgrDeclineDC(id){const r=findReq(id);const dc=activeDC(r);if(!dc){render();return;}
+  dc.o.status='declined';const lbl=dcLabel(dc);const cp=dcCounterparty(r,dc);
+  log(r,currentUser,'decline','Declined '+lbl+' — held '+fmtDate(r.requiredBy));
+  [dc.o.by,cp].forEach(u=>{if(u)notify(u,currentUser,id,`<b>${fname(currentUser)}</b> declined the ${lbl} on <b>${esc(r.request.slice(0,30))}</b> — ${fmtDate(r.requiredBy)} holds`,'decline');});
+  DB.save(r);render();toast('Declined','Original deadline held. Both sides notified.',null);}
 
 function approveExt(id){const r=findReq(id);
   if(!(r.extension&&r.extension.status==='pending')){render();toast('Already handled','This extension was already decided.',null);return;}
@@ -1002,6 +1118,14 @@ function remindApproval(id){const r=findReq(id);log(r,currentUser,'query','Nudge
   notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> is waiting on your sign-off for <b>${esc(r.request.slice(0,30))}</b>`,'done');
   DB.save(r);render();toast('Ecom nudged',fname(r.raisedBy)+' has been reminded to approve.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Delivered "${r.request.slice(0,40)}" (${r.id}) — could you review & approve when free?`)});}
 
+/* ---- choose who to ping from the creative team ---- */
+function pingChooser(id){const r=findReq(id);if(!r)return;
+  const creatives=PEOPLE.filter(p=>p.role==='creative');
+  const msg=`New request "${r.request.slice(0,50)}" (${r.id}) on ${r.platform} — needed by ${fmtDate(r.requiredBy)}. It's in the Pending queue; grab it if you can take it.`;
+  const rows=creatives.length?creatives.map(p=>`<div class="person" style="padding:10px 0"><div class="av" style="background:${colorFor(p.name)};width:32px;height:32px;font-size:12px">${initials(p.name)}</div><div class="pn"><b>${esc(p.name)}</b><span class="mono">+${p.phone}</span></div><a class="btn wa sm" target="_blank" href="${waLink(p.id,msg)}"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.1.1.3 0 .5l-.4.5c-.2.2-.3.4-.2.6.1.2.6 1 1.3 1.6.9.8 1.6 1 1.8 1.1.2.1.4.1.5-.1l.6-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>WhatsApp</a></div>`).join(''):`<p class="hint">No creative team members found.</p>`;
+  modal('Ping the creative team',`<p class="hint" style="margin:-2px 0 10px">The request is visible to everyone in creative — whoever accepts it becomes the owner. Nudge whoever you'd like to pick it up:</p>${rows}`,
+    `<button class="btn primary" onclick="closeModal()">Done</button>`);}
+
 function openPrepone(id){const r=findReq(id);
   const cur=new Date(r.agreedDeadline||r.requiredBy);
   const maxD=ymd(new Date(cur.getTime()-DAY));
@@ -1031,17 +1155,22 @@ function onSampleFiles(input){
 }
 function removeSample(i){sampleFiles.splice(i,1);onSampleFiles({files:[],value:''});}
 
+function openUpdate(id){openRequestForm(id);}
 function openRequestForm(editId){
   sampleFiles=[];
   const r=editId?findReq(editId):null;
   if(r&&r.attachments)sampleFiles=r.attachments.slice();
   const ecomOpts=PEOPLE.filter(p=>p.role==='ecom').map(p=>`<option value="${p.id}" ${r&&r.raisedBy===p.id||!r&&p.id===currentUser?'selected':''}>${p.name}</option>`).join('');
-  const plats=['Blinkit','Zepto','Instamart','Amazon','BigBasket','Website'].map(p=>`<option ${r&&r.platform===p?'selected':''}>${p}</option>`).join('');
+  const PLATFORMS=['Blinkit','Zepto','Instamart','Amazon','Flipkart','Meesho','Myntra','Nykaa','Cred','Firstcry','Purplle','BigBasket','Website','Other'];
+  const knownPlat=r&&PLATFORMS.indexOf(r.platform)>=0;
+  const isOther=r&&!knownPlat;
+  const plats=PLATFORMS.map(p=>`<option ${((r&&r.platform===p)||(isOther&&p==='Other'))?'selected':''}>${p}</option>`).join('');
   modal(editId?'Update request':'Raise a creative request',`
     <div class="two">
       <div class="field"><label>Raised by <span class="req">*</span></label><select id="fBy">${ecomOpts}</select></div>
-      <div class="field"><label>Platform <span class="req">*</span></label><select id="fPlat">${plats}</select></div>
+      <div class="field"><label>Platform <span class="req">*</span></label><select id="fPlat" onchange="document.getElementById('fPlatOtherWrap').style.display=this.value==='Other'?'block':'none'">${plats}</select></div>
     </div>
+    <div class="field" id="fPlatOtherWrap" style="display:${isOther?'block':'none'}"><label>Which platform? <span class="req">*</span></label><input id="fPlatOther" placeholder="Type the platform name" value="${isOther?esc(r.platform):''}"></div>
     <div class="field"><label>Request <span class="req">*</span></label><textarea id="fReq" placeholder="What do you need? e.g. Hero banner for Face Wash on Blinkit brand store…">${r?esc(r.request):''}</textarea></div>
     <div class="field"><label>NH SKU code(s) <span class="req">*</span></label><input id="fSku" placeholder="e.g. NH-FW-101  (comma-separate for multiple)" value="${r?esc(r.nhSku||''):''}"><div class="hint">One or many — separate with commas.</div></div>
     <div class="two">
@@ -1071,26 +1200,28 @@ function openRequestForm(editId){
 function submitRequest(editId){
   const g=id=>document.getElementById(id).value;
   const copyReq=document.getElementById('fCopy').classList.contains('on');
+  let platform=g('fPlat');
+  if(platform==='Other'){const o=g('fPlatOther').trim();if(!o){mErr('Type the platform name for “Other”.');return;}platform=o;}
   if(!g('fReq').trim()){mErr('Describe what you need in the Request field.');return;}
   if(!g('fSku').trim()){mErr('Add at least one NH SKU code.');return;}
   if(g('fDate')<TODAY_STR){mErr('Required-by is in the past — pick a future date.');return;}
   if(copyReq){const cl=+g('fChar');if(!cl||cl<1){mErr('Set a character limit for the copy, or turn Copy off.');return;}}
   const skuClean=g('fSku').split(',').map(s=>s.trim()).filter(Boolean).join(', ');
   if(editId){const r=findReq(editId);const wasDeclined=r.status==='declined';
-    Object.assign(r,{raisedBy:g('fBy'),platform:g('fPlat'),nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
+    Object.assign(r,{raisedBy:g('fBy'),platform:platform,nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
       dimensions:g('fDim'),sampleLink:g('fSample'),attachments:(sampleFiles.length?sampleFiles.slice():r.attachments||[]),copyReq,charLimit:copyReq?(+g('fChar')||null):null,other:g('fOther')});
     if(wasDeclined){r.status='pending';r.assignee=null;r.declineReason=null;log(r,currentUser,'created','Edited & re-raised');}
     else{log(r,currentUser,'created','Updated the request');if(r.assignee)notify(r.assignee,currentUser,r.id,`<b>${fname(currentUser)}</b> updated <b>${esc(r.request.slice(0,30))}</b>`,'query');}
     DB.save(r);closeModal();render();toast(wasDeclined?'Re-raised':'Request updated',wasDeclined?'Back in the creative queue.':'Changes saved'+(r.assignee?' · '+fname(r.assignee)+' notified.':'.'),null);return;}
   const maxN=REQUESTS.reduce((m,r)=>Math.max(m,+r.id.split('-')[1]),1043);
-  const nr={id:'CR-'+(maxN+1),raisedBy:g('fBy'),platform:g('fPlat'),nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
+  const nr={id:'CR-'+(maxN+1),raisedBy:g('fBy'),platform:platform,nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
     sampleLink:g('fSample'),attachments:sampleFiles.slice(),dimensions:g('fDim'),copyReq,charLimit:copyReq?(+g('fChar')||null):null,other:g('fOther'),
     createdAt:iso(today),priority:null,status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
     extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
     activity:[{ts:iso(today),actor:g('fBy'),type:'created',note:'Raised the request'}]};
   REQUESTS.unshift(nr);
   PEOPLE.filter(p=>p.role==='creative').forEach(c=>notify(c.id,g('fBy'),nr.id,`New request from <b>${fname(g('fBy'))}</b>: <b>${esc(nr.request.slice(0,30))}</b>`,'created'));
-  DB.save(nr);closeModal();render();toast('Request sent','It\'s in the creative Pending queue.',{label:'Ping creative team',href:waLink(firstOf('creative').id,`New request "${nr.request.slice(0,40)}" (${nr.id}) — needed by ${fmtDate(nr.requiredBy)}. Details in the tool.`)});
+  DB.save(nr);closeModal();render();toast('Request sent','It\'s in the creative Pending queue.',null);pingChooser(nr.id);
 }
 
 /* =================== SHELL =================== */
@@ -1132,7 +1263,7 @@ function toast(title,msg,wa){const wrap=document.getElementById('toasts');const 
 function screenMsg(icon,title,sub,btn){
   return `<div class="empty" style="padding:80px 20px">${icon}<h4>${title}</h4><p>${sub}</p>${btn||''}</div>`;
 }
-const leafIcon=`<div class="leaf" style="width:44px;height:44px;margin:0 auto 16px"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 3-11 9-13-1 8-5 12-9 13Zm0 0c0-6-3-11-9-13 1 8 5 12 9 13Z" stroke="#E9AE54" stroke-width="1.4" stroke-linejoin="round"/></svg></div>`;
+const leafIcon=`<img src="data:image/png;base64,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" alt="nat habit" style="height:52px;width:auto;margin:0 auto 18px;display:block"/>`;
 const REMEMBER_KEY='nh_uid';
 
 /* ---- login gate ---- */
