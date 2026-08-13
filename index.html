@@ -118,6 +118,10 @@
   .pr-high{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
   .pr-med{color:var(--gold);background:var(--gold-soft);border-color:rgba(184,135,31,.3)}
   .pr-low{color:var(--dim);background:rgba(147,160,189,.1);border-color:rgba(147,160,189,.22)}
+  .pr-p0{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
+  .pr-p1{color:var(--coral);background:var(--coral-soft);border-color:rgba(240,137,78,.3)}
+  .pr-p2{color:var(--gold);background:var(--gold-soft);border-color:rgba(184,135,31,.3)}
+  .pr-p3{color:var(--dim);background:rgba(147,160,189,.1);border-color:rgba(147,160,189,.22)}
   .pr-none{color:var(--mute);background:rgba(147,160,189,.08);border-color:rgba(147,160,189,.18)}
   .chip.type{color:var(--dim);background:var(--bg2);border-color:var(--border)}
   .chip.flag{color:var(--coral);background:var(--coral-soft);border-color:rgba(240,137,78,.3)}
@@ -538,7 +542,7 @@ function activeDC(r){
   return null;
 }
 function dcCounterparty(r,dc){return dc.o.by===r.raisedBy?r.assignee:r.raisedBy;}
-function dcIsPeer(dc){return dc.o.status==='peer';}
+function dcIsPeer(dc){return dc.o.status==='peer'||dc.o.status==='pending';}
 function dcDecider(dc){const s=dc.o.status||'';return s.indexOf('esc:')===0?s.slice(4):null;}
 function applyDC(r,dc){dc.o.status='approved';r.requiredBy=dc.o.proposedDate;r.agreedDeadline=dc.o.proposedDate;}
 function dcLabel(dc){return dc.dir==='earlier'?'prepone':'postpone';}
@@ -594,7 +598,9 @@ async function refresh(){
 
 const STATUS_LABEL={pending:'Pending acceptance',ongoing:'Ongoing',pending_approval:'Awaiting approval',completed:'Completed',declined:'Declined'};
 function statusChip(s){return `<span class="chip st-${s}"><span class="d"></span>${STATUS_LABEL[s]}</span>`;}
-function prioChip(p){const l={high:'High',med:'Medium',low:'Low'};return p?`<span class="chip pr-${p}">${l[p]}</span>`:`<span class="chip pr-none">No priority</span>`;}
+function normalizePrio(p){return ({high:'p0',med:'p1',low:'p2'})[p]||p||null;}
+const PRIO_LABEL={p0:'P0',p1:'P1',p2:'P2',p3:'P3'};
+function prioChip(p){const pp=normalizePrio(p);return pp?`<span class="chip pr-${pp}">${PRIO_LABEL[pp]||pp}</span>`:`<span class="chip pr-none">No priority</span>`;}
 function miniAv(id){const p=byId(id);return `<span class="miniav" style="background:${colorFor(p.name)}">${initials(p.name)}</span>`;}
 function pendency(r){
   const p=[];
@@ -682,6 +688,7 @@ function taskTable(list,viewer){
       ${op?`<tr><td class="detailcell" colspan="10"><div class="inner">${briefBlock(r)}<div class="actions" onclick="event.stopPropagation()">${detailActions(r,viewer)}</div></div></td></tr>`:''}`;
     }).join('')}</tbody></table></div>`;
 }
+function toggleRow(id){expanded.has(id)?expanded.delete(id):expanded.add(id);render();}
 function queriesPanel(list){
   const items=[];
   list.forEach(r=>r.queries.forEach(q=>items.push({r,q})));
@@ -705,7 +712,8 @@ function detailActions(r,viewer){
     if(dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser){
       b+=`<span style="align-self:center;color:var(--coral);font-size:12.5px;font-weight:600">${fname(dc.o.by)} asked to ${dcLabel(dc)} to ${fmtDate(dc.o.proposedDate)}</span>`;
       b+=`<button class="btn good sm" onclick="peerApprove('${r.id}')">Approve</button>`;
-      b+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate</button>`;
+      b+=`<button class="btn danger sm" onclick="peerDecline('${r.id}')">Decline</button>`;
+      b+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate to manager</button>`;
     }
     r.queries.filter(q=>!q.answer&&q.to===r.raisedBy).forEach(q=>b+=`<button class="btn good sm" onclick="answerQuery('${r.id}','${q.id}')">Answer query</button>`);
     if(r.status==='pending_approval'){
@@ -733,7 +741,7 @@ function detailActions(r,viewer){
     }
     if(r.status!=='completed'&&r.status!=='declined'){
       b+=`<span style="align-self:center;color:var(--mute);font-size:12px;margin-right:2px">Set priority:</span>`;
-      b+=`<button class="btn danger sm" onclick="setPrio('${r.id}','high')">High</button><button class="btn sm" onclick="setPrio('${r.id}','med')">Medium</button><button class="btn sm" onclick="setPrio('${r.id}','low')">Low</button>`;
+      b+=`<button class="btn danger sm" onclick="setPrio('${r.id}','p0')">P0</button><button class="btn sm" onclick="setPrio('${r.id}','p1')">P1</button><button class="btn sm" onclick="setPrio('${r.id}','p2')">P2</button><button class="btn sm" onclick="setPrio('${r.id}','p3')">P3</button>`;
     }
   }
   if(!b)b=`<span style="color:var(--mute);font-size:12px">No actions for you on this one right now.</span>`;
@@ -783,8 +791,9 @@ function viewCreative(){
   const mine=all.filter(r=>r.assignee===currentUser);
   const ongoing=mine.filter(r=>r.status==='ongoing'||r.status==='pending_approval').filter(matchesSearch);
   const done=mine.filter(r=>r.status==='completed').filter(matchesSearch);
-  const prioRank={high:0,med:1,low:2,null:3};
-  pending.sort((a,b)=>(prioRank[a.priority]-prioRank[b.priority])||(new Date(a.requiredBy)-new Date(b.requiredBy)));
+  const prioRank={p0:0,p1:1,p2:2,p3:3};
+  const pr=x=>{const v=prioRank[normalizePrio(x.priority)];return v===undefined?9:v;};
+  pending.sort((a,b)=>(pr(a)-pr(b))||(new Date(a.requiredBy)-new Date(b.requiredBy)));
 
   app.innerHTML=`${demoNote()}
     <div class="pagehead"><div><div class="eyebrow">Creative team · ${byId(currentUser).name}</div><h1>Your board</h1>
@@ -821,7 +830,8 @@ function creativeCard(r,mode){
       if(dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser){
         acts=`<span style="align-self:center;color:var(--coral);font-size:12.5px;font-weight:600">${fname(dc.o.by)} asked to ${dcLabel(dc)} to ${fmtDate(dc.o.proposedDate)}</span>`;
         acts+=`<button class="btn good sm" onclick="peerApprove('${r.id}')">Approve</button>`;
-        acts+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate</button>`;
+        acts+=`<button class="btn danger sm" onclick="peerDecline('${r.id}')">Decline</button>`;
+        acts+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate to manager</button>`;
       }else{
         acts=`<button class="btn good" onclick="openComplete('${r.id}')">Mark complete</button>`;
         acts+=`<button class="btn sm" onclick="openQuery('${r.id}')">Raise query</button>`;
@@ -865,7 +875,7 @@ function decisionsPanel(){
     R+=`<div class="reqbox prio"><div class="rh"><span class="tag">Prioritise</span><b>${prio.length} task${prio.length>1?'s':''} sent to you for a priority call</b></div>
     <div class="line" style="margin-bottom:8px">Set the order they should be worked in:</div>
     ${prio.map(r=>`<div class="prioline"><div class="pl">${esc(r.request.slice(0,44))}<div class="mono">${r.id} · ${r.assignee?fname(r.assignee):'unassigned'} · req. ${fmtDate(r.requiredBy)}</div></div>
-      <div class="prioset"><button class="btn danger sm" onclick="setPrio('${r.id}','high')">High</button><button class="btn sm" onclick="setPrio('${r.id}','med')">Med</button><button class="btn sm" onclick="setPrio('${r.id}','low')">Low</button></div></div>`).join('')}</div>`;}
+      <div class="prioset"><button class="btn danger sm" onclick="setPrio('${r.id}','p0')">P0</button><button class="btn sm" onclick="setPrio('${r.id}','p1')">P1</button><button class="btn sm" onclick="setPrio('${r.id}','p2')">P2</button><button class="btn sm" onclick="setPrio('${r.id}','p3')">P3</button></div></div>`).join('')}</div>`;}
   return {n,html:n?R:emptyState('All clear','Nothing escalated to you right now.')};
 }
 function viewManager(){
@@ -925,20 +935,17 @@ function viewAdmin(){
 /* =================== ACTIONS =================== */
 function setPrio(id,p){const r=findReq(id);
   if(r.status==='completed'||r.status==='declined'){render();return;}
-  r.priority=p;r.prioritizeReq=false;const wasBy=r.prioritizeBy;r.prioritizeBy=null;
-  log(r,currentUser,'priority','Priority set to '+({high:'High',med:'Medium',low:'Low'}[p]));
-  if(r.assignee)notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> set <b>${esc(r.request.slice(0,30))}</b> to ${p} priority`,'priority');
-  DB.save(r);render();toast('Priority set','Marked '+p+' priority.',r.assignee?{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Priority on "${r.request.slice(0,40)}" (${r.id}): ${p.toUpperCase()}.`)}:null);}
+  r.priority=p;r.prioritizeReq=false;r.prioritizeBy=null;
+  log(r,currentUser,'priority','Priority set to '+(PRIO_LABEL[p]||p));
+  if(r.assignee)notify(r.assignee,currentUser,id,`<b>${fname(currentUser)}</b> set <b>${esc(r.request.slice(0,30))}</b> to ${PRIO_LABEL[p]||p}`,'priority');
+  DB.save(r);render();toast('Priority set','Marked '+(PRIO_LABEL[p]||p)+'.',r.assignee?{label:'Ping '+fname(r.assignee),href:waLink(r.assignee,`Priority on "${r.request.slice(0,40)}" (${r.id}): ${PRIO_LABEL[p]||p}.`)}:null);}
 
 function openAccept(id){const r=findReq(id);
-  modal(`Accept — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>Deadline you're committing to <span class="req">*</span></label><input type="date" id="accDate" min="${TODAY_STR}" value="${r.requiredBy.slice(0,10)}"><div class="hint">Requested by ${fmtDate(r.requiredBy)}. Confirm it, or set the date you can realistically hit.</div></div>`,
+  modal(`Accept — ${esc(r.request.slice(0,40))}`,`<div class="field"><label>Deadline</label><input type="date" id="accDate" value="${r.requiredBy.slice(0,10)}" disabled style="opacity:.65;cursor:not-allowed"><div class="hint">Accepting commits you to the requested date, <b>${fmtDate(r.requiredBy)}</b>. If you'll need more time, accept first, then use <b>Ask for more time</b> — ${fname(r.raisedBy)} approves that.</div></div>`,
     `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn good" onclick="doAccept('${id}')">Accept task</button>`);}
 function doAccept(id){const r=findReq(id);
   if(r.status!=='pending'){closeModal();render();toast('Already taken','Someone just picked this one up.',null);return;}
-  const v=document.getElementById('accDate').value;
-  if(!v){mErr('Pick a deadline you can commit to.');return;}
-  if(v<TODAY_STR){mErr('That deadline is in the past — pick today or later.');return;}
-  r.status='ongoing';r.assignee=currentUser;r.agreedDeadline=new Date(v).toISOString();
+  r.status='ongoing';r.assignee=currentUser;r.agreedDeadline=r.requiredBy;
   log(r,currentUser,'accept','Accepted · deadline '+fmtDate(r.agreedDeadline));
   notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> accepted <b>${esc(r.request.slice(0,30))}</b> — deadline ${fmtDate(r.agreedDeadline)}`,'accept');
   DB.save(r);closeModal();render();toast('Accepted',fname(r.raisedBy)+' has been notified.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Accepted "${r.request.slice(0,40)}" (${r.id}). Deadline ${fmtDate(r.agreedDeadline)}.`)});}
@@ -1043,6 +1050,11 @@ function peerApprove(id){const r=findReq(id);const dc=activeDC(r);if(!dc||!dcIsP
   log(r,currentUser,'approve','Approved the '+lbl+' to '+fmtDate(dc.o.proposedDate));
   notify(dc.o.by,currentUser,id,`<b>${fname(currentUser)}</b> approved your ${lbl} on <b>${esc(r.request.slice(0,30))}</b> — now ${fmtDate(dc.o.proposedDate)}`,'approve');
   DB.save(r);render();toast('Approved','Deadline moved to '+fmtDate(dc.o.proposedDate)+'.',{label:'Ping '+fname(dc.o.by),href:waLink(dc.o.by,`Agreed — "${r.request.slice(0,40)}" (${r.id}) now ${fmtDate(dc.o.proposedDate)}.`)});}
+function peerDecline(id){const r=findReq(id);const dc=activeDC(r);if(!dc||!dcIsPeer(dc)){render();return;}
+  dc.o.status='declined';const lbl=dcLabel(dc);
+  log(r,currentUser,'decline','Declined the '+lbl+' — held '+fmtDate(r.requiredBy));
+  notify(dc.o.by,currentUser,id,`<b>${fname(currentUser)}</b> declined your ${lbl} on <b>${esc(r.request.slice(0,30))}</b> — ${fmtDate(r.requiredBy)} holds`,'decline');
+  DB.save(r);render();toast('Declined','Held '+fmtDate(r.requiredBy)+'. '+fname(dc.o.by)+' notified — they can raise it again or escalate.',{label:'Ping '+fname(dc.o.by),href:waLink(dc.o.by,`Re "${r.request.slice(0,40)}" (${r.id}) — can\u2019t do ${fmtDate(dc.o.proposedDate)}; ${fmtDate(r.requiredBy)} holds. Escalate if needed.`)});}
 function peerEscalate(id){const r=findReq(id);const dc=activeDC(r);if(!dc)return;
   const cm=firstOf('creative_manager'), em=firstOf('ecom_manager');
   modal('Escalate — who should decide?',`<p class="hint" style="margin:-2px 0 12px">You and ${fname(dc.o.by)} don\u2019t agree on the date. Pick who makes the call — both managers get notified.</p>
