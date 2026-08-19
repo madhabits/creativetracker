@@ -319,6 +319,20 @@
   #refresh:hover{color:var(--green);border-color:var(--green)}
   .live-note{display:flex;gap:11px;align-items:center;background:var(--sage-soft);border:1px solid rgba(62,158,106,.3);border-radius:12px;padding:11px 14px;margin-bottom:22px;font-size:12.5px;color:#2b6b48}
   .live-note .ld{width:8px;height:8px;border-radius:50%;background:var(--sage);flex:none;box-shadow:0 0 0 3px rgba(62,158,106,.2)}
+
+  /* login */
+  .teamgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:12px;margin-top:24px}
+  .teamcard{background:var(--surface);border:1px solid var(--border-soft);border-radius:16px;padding:20px 14px;display:flex;flex-direction:column;align-items:center;gap:11px;cursor:pointer;transition:.18s;text-align:center}
+  .teamcard:hover{transform:translateY(-4px);border-color:var(--green);box-shadow:var(--shadow)}
+  .teamic{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;transition:.18s}
+  .teamcard:hover .teamic{transform:scale(1.06) rotate(-3deg)}
+  .teamic svg{width:27px;height:27px}
+  .teamname{font-family:Sora;font-weight:600;font-size:15px}
+  .teamcount{font-size:11.5px;color:var(--mute)}
+  .pickrow{display:flex;align-items:center;gap:11px;padding:12px 14px;background:var(--surface);border:1px solid var(--border-soft);border-radius:13px;cursor:pointer;transition:.15s;width:100%;text-align:left}
+  .pickrow:hover{border-color:var(--green);transform:translateX(3px);background:var(--surface2)}
+  .pickrow .thatsme{margin-left:auto;font-size:11.5px;color:var(--mute);opacity:0;transition:.15s;display:flex;align-items:center;gap:4px;font-weight:600}
+  .pickrow:hover .thatsme{opacity:1;color:var(--green)}
 </style>
 </head>
 <body>
@@ -1309,30 +1323,46 @@ const REMEMBER_KEY='nh_uid';
 
 /* ---- login gate ---- */
 const LOGIN_TEAMS=[
-  {key:'ecom',label:'Ecom team',roles:['ecom']},
-  {key:'creative',label:'Creative team',roles:['creative']},
-  {key:'manager',label:'Managers',roles:['ecom_manager','creative_manager','admin']}
+  {key:'ecom',label:'Ecom',roles:['ecom'],color:'var(--blue)',tint:'var(--blue-soft)',
+   icon:`<svg viewBox="0 0 24 24" fill="none"><path d="M6 8h12l-1 11a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 8V7a3 3 0 0 1 6 0v1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`},
+  {key:'creative',label:'Creative',roles:['creative'],color:'var(--coral)',tint:'var(--coral-soft)',
+   icon:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.4L12 17l-1.9-5.6L4.5 10l5.6-1.4L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M18.5 15l.6 1.9L21 17.5l-1.9.6L18.5 20l-.6-1.9L16 17.5l1.9-.6L18.5 15Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>`},
+  {key:'manager',label:'Managers',roles:['ecom_manager','creative_manager','admin'],color:'var(--purple)',tint:'var(--purple-soft)',
+   icon:`<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`}
+];
+const LINERS=[
+  "Briefs in, magic out. Welcome to the studio.",
+  "Ecom dreams it, creative makes it — let\u2019s go.",
+  "Every great creative starts with knowing who\u2019s asking.",
+  "Fresh briefs, happy designers. Find your crew.",
+  "Where \u201Ccan you quickly\u2026\u201D becomes an actual plan."
 ];
 function loginPicker(){loginTeam();}
 function loginTeam(){
   renderHeader(); const wm=document.getElementById('whoami'); if(wm)wm.innerHTML='';
-  app.innerHTML=`<div style="max-width:460px;margin:52px auto 0">
-    <div style="text-align:center">${leafIcon}<h1>Welcome</h1>
-    <p class="lede" style="margin:8px auto 0">Which team are you from?</p></div>
-    <div style="display:flex;flex-direction:column;gap:10px;margin-top:22px">
-    ${LOGIN_TEAMS.map(t=>{const n=PEOPLE.filter(p=>t.roles.indexOf(p.role)>=0).length;return `<button class="btn" style="justify-content:space-between;padding:15px 16px;font-size:14px" onclick="loginPeople('${t.key}')"><span>${t.label}</span><span class="chip type">${n} ${n===1?'person':'people'}</span></button>`;}).join('')}
+  const liner=LINERS[Math.floor(Math.random()*LINERS.length)];
+  app.innerHTML=`<div style="max-width:540px;margin:48px auto 0">
+    <div style="text-align:center">${leafIcon}<h1>Which crew are you on?</h1>
+    <p class="lede" style="margin:8px auto 0">${liner}</p></div>
+    <div class="teamgrid">
+    ${LOGIN_TEAMS.map(t=>{const n=PEOPLE.filter(p=>t.roles.indexOf(p.role)>=0).length;return `<button class="teamcard" onclick="loginPeople('${t.key}')">
+       <div class="teamic" style="background:${t.tint};color:${t.color}">${t.icon}</div>
+       <div class="teamname">${t.label}</div>
+       <div class="teamcount">${n} ${n===1?'person':'people'}</div>
+    </button>`;}).join('')}
     </div></div>`;
 }
 function loginPeople(teamKey){
   const t=LOGIN_TEAMS.find(x=>x.key===teamKey); if(!t)return loginTeam();
   const people=PEOPLE.filter(p=>t.roles.indexOf(p.role)>=0);
-  app.innerHTML=`<div style="max-width:460px;margin:52px auto 0">
-    <div style="text-align:center">${leafIcon}<h1>${t.label}</h1>
-    <p class="lede" style="margin:8px auto 0">Select your name.</p></div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-top:22px">
-    ${people.length?people.map(p=>`<button class="btn" style="justify-content:space-between;padding:13px 15px" onclick="pickLogin('${p.id}')"><span style="display:flex;align-items:center;gap:10px"><span class="miniav" style="width:26px;height:26px;font-size:11px;background:${colorFor(p.name)}">${initials(p.name)}</span>${esc(p.name)}</span><span class="rolechip rc-${roleBase(p.role)}">${ROLE_LABEL[p.role]||p.role}</span></button>`).join(''):`<p class="hint" style="text-align:center">No one in this team yet.</p>`}
+  app.innerHTML=`<div style="max-width:460px;margin:48px auto 0">
+    <div style="text-align:center"><div class="teamic" style="width:56px;height:56px;margin:0 auto 14px;background:${t.tint};color:${t.color}">${t.icon}</div>
+    <h1>Hey ${t.label} team \u2014 who are you?</h1>
+    <p class="lede" style="margin:8px auto 0">Tap your name to jump in. We\u2019ll remember you on this device.</p></div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-top:22px">
+    ${people.length?people.map(p=>`<button class="pickrow" onclick="pickLogin('${p.id}')"><span class="miniav" style="width:30px;height:30px;font-size:12px;background:${colorFor(p.name)}">${initials(p.name)}</span><span><b style="font-size:13.5px">${esc(p.name)}</b><span style="display:block;font-size:11px;color:var(--mute)">${ROLE_LABEL[p.role]||p.role}</span></span><span class="thatsme">That\u2019s me <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>`).join(''):`<p class="hint" style="text-align:center">No one in this team yet.</p>`}
     </div>
-    <div style="margin-top:14px"><button class="btn ghost sm" onclick="loginTeam()">← Back to teams</button></div></div>`;
+    <div style="margin-top:16px;text-align:center"><button class="btn ghost sm" onclick="loginTeam()">\u2190 Back to teams</button></div></div>`;
 }
 function pickLogin(id){ const p=byId(id); if(!p)return; passwordScreen(p,!!HASPASS[String(id)]); }
 function passwordScreen(p,hasPass){
