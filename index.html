@@ -115,13 +115,15 @@
   .st-pending_approval{color:var(--purple);background:var(--purple-soft);border-color:rgba(180,140,232,.3)}
   .st-completed{color:var(--sage);background:var(--sage-soft);border-color:rgba(111,191,156,.3)}
   .st-declined{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
+  .st-urgent_review{color:var(--coral);background:var(--coral-soft);border-color:rgba(198,123,58,.35)}
+  .chip.urgent{color:#fff;background:var(--red);border-color:var(--red)}
   .pr-high{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
   .pr-med{color:var(--gold);background:var(--gold-soft);border-color:rgba(184,135,31,.3)}
   .pr-low{color:var(--dim);background:rgba(147,160,189,.1);border-color:rgba(147,160,189,.22)}
   .pr-p0{color:var(--red);background:var(--red-soft);border-color:rgba(232,101,107,.3)}
   .pr-p1{color:var(--coral);background:var(--coral-soft);border-color:rgba(240,137,78,.3)}
   .pr-p2{color:var(--gold);background:var(--gold-soft);border-color:rgba(184,135,31,.3)}
-  .pr-p3{color:var(--dim);background:rgba(147,160,189,.1);border-color:rgba(147,160,189,.22)}
+  .pr-p3,.pr-p4,.pr-p5,.pr-p6,.pr-p7{color:var(--dim);background:rgba(147,160,189,.1);border-color:rgba(147,160,189,.22)}
   .pr-none{color:var(--mute);background:rgba(147,160,189,.08);border-color:rgba(147,160,189,.18)}
   .chip.type{color:var(--dim);background:var(--bg2);border-color:var(--border)}
   .chip.flag{color:var(--coral);background:var(--coral-soft);border-color:rgba(240,137,78,.3)}
@@ -346,6 +348,13 @@
   <button class="iconbtn" id="refresh" title="Refresh from the sheet">
     <svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
   </button>
+  <button class="iconbtn" id="attnBtn" title="Requires your attention">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M5 21V5a2 2 0 0 1 2-2h9l-1.5 4L16 11H7" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    <span class="badge" id="attnCount" style="display:none">0</span>
+  </button>
+  <button class="iconbtn" id="trackerBtn" title="Team tracker — all work">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="19" cy="18" r="2" stroke="currentColor" stroke-width="1.6"/></svg>
+  </button>
   <button class="iconbtn" id="queriesBtn" title="All queries">
     <svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
   </button>
@@ -403,6 +412,27 @@ let PEOPLE=[
 const byId=id=>PEOPLE.find(p=>p.id===id)||{name:'—',role:'',phone:''};
 const firstOf=role=>PEOPLE.find(p=>p.role===role);
 const fname=id=>byId(id).name.split(' ')[0];
+
+/* request types + minimum TAT (turnaround, in days) */
+const REQ_TYPES=[
+  {label:'PDP – Rebranded single variant',tat:3},
+  {label:'PDP – Rebranded images (all variants)',tat:10},
+  {label:'A+ Slides',tat:10},
+  {label:'Brand Store',tat:15},
+  {label:'Banner / SB Banner',tat:3},
+  {label:'MATF / Hero Fader',tat:3},
+  {label:'White BG Images',tat:3},
+  {label:'Combo Images (with/without text)',tat:7},
+  {label:'Video – Different Platforms',tat:7},
+  {label:'Blinkit Videos',tat:7},
+  {label:'Brand of the Day / Deal of the Day / Insta Offer Story',tat:2},
+  {label:'EAN Code Changes',tat:2},
+  {label:'1st Images with Text',tat:3},
+  {label:'Other',tat:3}
+];
+function tatOf(type){const t=REQ_TYPES.find(x=>x.label===type);return t?t.tat:3;}
+function daysUntil(dateStr){return Math.round((new Date(dateStr).setHours(0,0,0,0)-startOfToday.getTime())/DAY);}
+function isUrgent(type,dateStr){return daysUntil(dateStr)<tatOf(type);}
 
 const DAY=864e5; const today = LIVE ? new Date() : new Date('2026-08-04T10:00:00');
 function d(o){return new Date(today.getTime()+o*DAY);}
@@ -537,6 +567,7 @@ function normalizeReq(r){
     attachments:(r.attachments?String(r.attachments).split(',').map(s=>s.trim()).filter(Boolean).map(name=>({name})):[]),
     dimensions:r.dimensions||'', copyReq:truthy(r.copyReq), charLimit:r.charLimit?Number(r.charLimit):null,
     other:r.other||'', createdAt:r.createdAt, priority:r.priority||null, status:r.status,
+    type:r.type||'', urgent:truthy(r.urgent), urgEm:r.urgEm||'', urgCm:r.urgCm||'',
     assignee:r.assignee?String(r.assignee):null, agreedDeadline:r.agreedDeadline||null,
     declineReason:r.declineReason||null, deliverable:r.deliverable||null,
     extension:r.extension||null, prepone:r.prepone||null,
@@ -596,6 +627,8 @@ function mErr(msg){const mb=modalEl.querySelector('.modal-b');if(!mb)return;let 
 const app=document.getElementById('app');
 function render(){
   renderHeader();
+  if(attentionMode){renderAttention();renderBell();return;}
+  if(trackerMode){renderTracker();renderBell();return;}
   if(currentRole==='ecom'||currentRole==='ecom_manager')viewEcom();
   else if(currentRole==='creative')viewCreative();
   else if(currentRole==='creative_manager')viewManager();
@@ -606,6 +639,8 @@ function renderHeader(){
   const u=byId(currentUser);
   document.getElementById('whoami').innerHTML=`<div class="av" style="background:${colorFor(u.name)}">${initials(u.name)}</div><div class="meta"><b>${esc(u.name)}</b><span>${ROLE_LABEL[u.role]||u.role}</span></div><button class="btn ghost sm" style="margin-left:6px;padding:5px 10px" onclick="logout()">Log out</button>`;
   const rf=document.getElementById('refresh'); if(rf){rf.onclick=refresh; rf.style.display=LIVE?'grid':'none';}
+  const ac=document.getElementById('attnCount');
+  if(ac){const n=(currentUser&&PEOPLE.find(p=>p.id===currentUser))?attentionItems().length:0; if(n){ac.style.display='grid';ac.textContent=n;}else ac.style.display='none';}
 }
 async function refresh(){
   if(!LIVE)return;
@@ -615,16 +650,56 @@ async function refresh(){
   const rf2=document.getElementById('refresh'); if(rf2)rf2.classList.remove('spin');
 }
 
-const STATUS_LABEL={pending:'Pending acceptance',ongoing:'Ongoing',pending_approval:'Awaiting approval',completed:'Completed',declined:'Declined'};
+const STATUS_LABEL={pending:'Pending acceptance',ongoing:'Ongoing',pending_approval:'Awaiting approval',completed:'Completed',declined:'Declined',urgent_review:'Urgent — manager review'};
 function statusChip(s){return `<span class="chip st-${s}"><span class="d"></span>${STATUS_LABEL[s]}</span>`;}
 function normalizePrio(p){return ({high:'p0',med:'p1',low:'p2'})[p]||p||null;}
-const PRIO_LABEL={p0:'P0',p1:'P1',p2:'P2',p3:'P3'};
+function prioNum(p){const pp=normalizePrio(p);return pp&&/^p\d+$/.test(pp)?parseInt(pp.slice(1),10):undefined;}
+const PRIO_LABEL={p0:'P0',p1:'P1',p2:'P2',p3:'P3',p4:'P4',p5:'P5',p6:'P6',p7:'P7'};
 function prioChip(p){const pp=normalizePrio(p);return pp?`<span class="chip pr-${pp}">${PRIO_LABEL[pp]||pp}</span>`:`<span class="chip pr-none">No priority</span>`;}
+function activePrioMap(exceptId){
+  const m={};
+  DB.requests().forEach(r=>{
+    if(r.id===exceptId)return;
+    if(r.status==='completed'||r.status==='declined')return;
+    const pp=normalizePrio(r.priority); if(pp)m[pp]=r.id;
+  });
+  return m;
+}
+function openPriority(id){
+  const r=findReq(id); const taken=activePrioMap(id);
+  const maxTaken=Object.keys(taken).map(k=>prioNum(k)).reduce((a,b)=>Math.max(a,b),-1);
+  const count=Math.min(8,Math.max(4,maxTaken+2));
+  const levels=[]; for(let i=0;i<count;i++)levels.push('p'+i);
+  const body=`<p class="hint" style="margin:-2px 0 12px">Each priority sits on only one active task at a time. Taken levels are locked — pick a free one so the order stays clear.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+    ${levels.map(l=>{const t=taken[l];return t?`<button class="btn sm" disabled style="opacity:.5;cursor:not-allowed">${PRIO_LABEL[l]} · ${t}</button>`:`<button class="btn ${l==='p0'?'danger ':''}sm" onclick="setPrioFromPicker('${id}','${l}')">${PRIO_LABEL[l]}</button>`;}).join('')}
+    </div>
+    ${r.priority?`<p class="hint" style="margin-top:14px">Currently <b>${PRIO_LABEL[normalizePrio(r.priority)]}</b> · <button class="btn ghost sm" onclick="setPrioFromPicker('${id}','')">Clear priority</button></p>`:''}`;
+  modal(`Set priority — ${esc(r.request.slice(0,34))}`,body,`<button class="btn ghost" onclick="closeModal()">Cancel</button>`);
+}
+function setPrioFromPicker(id,p){
+  closeModal();
+  if(p===''){const r=findReq(id);r.priority=null;r.prioritizeReq=false;r.prioritizeBy=null;log(r,currentUser,'priority','Cleared priority');DB.save(r);render();toast('Cleared','Priority removed.',null);return;}
+  const taken=activePrioMap(id);
+  if(taken[p]){render();toast('Already taken',PRIO_LABEL[p]+' is on '+taken[p]+' — pick a free level.',null);return;}
+  setPrio(id,p);
+}
+function openMgrDate(id){const r=findReq(id);
+  modal(`Set completion date — ${esc(r.request.slice(0,34))}`,`<div class="field"><label>Deadline <span class="req">*</span></label><input type="date" id="mgDate" min="${TODAY_STR}" value="${(r.agreedDeadline||r.requiredBy).slice(0,10)}"><div class="hint">As manager you can finalise the date directly. ${r.assignee?fname(r.assignee)+' and ':''}${fname(r.raisedBy)} will be notified.</div></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="doMgrDate('${id}')">Set date</button>`);}
+function doMgrDate(id){const r=findReq(id);const v=document.getElementById('mgDate').value;
+  if(!v){mErr('Pick a date.');return;} if(v<TODAY_STR){mErr('Pick today or later.');return;}
+  r.requiredBy=new Date(v).toISOString();r.agreedDeadline=r.requiredBy;
+  if(r.prepone)r.prepone=null; if(r.extension)r.extension=null;
+  log(r,currentUser,'approve','Manager set completion date to '+fmtDate(r.agreedDeadline));
+  [r.assignee,r.raisedBy].forEach(u=>{if(u)notify(u,currentUser,id,`<b>${fname(currentUser)}</b> set the deadline for <b>${esc(r.request.slice(0,26))}</b> to ${fmtDate(r.agreedDeadline)}`,'approve');});
+  DB.save(r);closeModal();render();toast('Date set','Deadline finalised to '+fmtDate(r.agreedDeadline)+'.',null);}
 function miniAv(id){const p=byId(id);return `<span class="miniav" style="background:${colorFor(p.name)}">${initials(p.name)}</span>`;}
 function pendency(r){
   const p=[];
   if(r.status==='pending')p.push(['Awaiting acceptance','pend']);
   if(r.status==='pending_approval')p.push(['Ecom sign-off','apr']);
+  if(r.status==='urgent_review')p.push(['Urgent — mgr approval','ext']);
   const dc=activeDC(r);
   if(dc){const lbl=dc.dir==='earlier'?'Prepone':'Postpone';p.push([dcIsPeer(dc)?lbl+' — with peer':lbl+' — escalated', dc.dir==='earlier'?'pre':'ext']);}
   if(r.prioritizeReq)p.push(['Prioritise','prio']);
@@ -634,6 +709,7 @@ function pendency(r){
   return `<div class="pendwrap">${p.map(([t,c])=>`<span class="pend p-${c}">${t}</span>`).join('')}</div>`;
 }
 function flags(r){let out='';
+  if(r.urgent&&r.status!=='completed'&&r.status!=='declined')out+=`<span class="chip urgent">⚡ URGENT</span>`;
   const dc=activeDC(r);
   if(dc){const lbl=dc.dir==='earlier'?'Prepone':'Postpone';out+=`<span class="chip flag">${lbl} ${dcIsPeer(dc)?'requested':'escalated'}</span>`;}
   if(r.prioritizeReq)out+=`<span class="chip flagp">Prioritise requested</span>`;
@@ -649,7 +725,8 @@ function queryHTML(r){if(!r.queries.length)return '';
 
 function briefBlock(r){
   return `<div class="dgrid">
-    <div class="dg"><div class="k">Platform</div><div class="v">${r.platform}</div></div>
+    <div class="dg"><div class="k">Platform</div><div class="v">${esc(r.platform)}</div></div>
+    <div class="dg"><div class="k">Type</div><div class="v">${esc(r.type||'—')}${r.urgent?' <span class="chip urgent" style="margin-left:4px">⚡ URGENT</span>':''}</div></div>
     <div class="dg"><div class="k">NH SKU</div><div class="v mono">${esc(r.nhSku||'—')}</div></div>
     <div class="dg"><div class="k">Raised by</div><div class="v">${miniAv(r.raisedBy)}${byId(r.raisedBy).name}</div></div>
     <div class="dg"><div class="k">Required by</div><div class="v ${r.status!=='completed'&&isLate(r.requiredBy)?'late':''}">${fmtDate(r.requiredBy)}</div></div>
@@ -676,7 +753,7 @@ function sortList(list){
     if(sortKey==='platform')return (r.platform||'').toLowerCase();
     if(sortKey==='raisedBy')return byId(r.raisedBy).name.toLowerCase();
     if(sortKey==='assignee')return (r.assignee?byId(r.assignee).name:'~').toLowerCase();
-    if(sortKey==='priority'){const rk={p0:0,p1:1,p2:2,p3:3};const v=rk[normalizePrio(r.priority)];return v===undefined?9:v;}
+    if(sortKey==='priority'){const v=prioNum(r.priority);return v===undefined?99:v;}
     if(sortKey==='status')return r.status||'';
     if(sortKey==='id')return r.id;
     return '';
@@ -761,8 +838,8 @@ function detailActions(r,viewer){
       b+=`<button class="btn danger sm" onclick="mgrDeclineDC('${r.id}')">Decline — hold ${fmtDate(r.requiredBy)}</button>`;
     }
     if(r.status!=='completed'&&r.status!=='declined'){
-      b+=`<span style="align-self:center;color:var(--mute);font-size:12px;margin-right:2px">Set priority:</span>`;
-      b+=`<button class="btn danger sm" onclick="setPrio('${r.id}','p0')">P0</button><button class="btn sm" onclick="setPrio('${r.id}','p1')">P1</button><button class="btn sm" onclick="setPrio('${r.id}','p2')">P2</button><button class="btn sm" onclick="setPrio('${r.id}','p3')">P3</button>`;
+      b+=`<button class="btn sm" onclick="openPriority('${r.id}')">Set priority</button>`;
+      b+=`<button class="btn sm" onclick="openMgrDate('${r.id}')">Set date</button>`;
     }
   }
   if(!b)b=`<span style="color:var(--mute);font-size:12px">No actions for you on this one right now.</span>`;
@@ -812,9 +889,8 @@ function viewCreative(){
   const mine=all.filter(r=>r.assignee===currentUser);
   const ongoing=mine.filter(r=>r.status==='ongoing'||r.status==='pending_approval').filter(matchesSearch);
   const done=mine.filter(r=>r.status==='completed').filter(matchesSearch);
-  const prioRank={p0:0,p1:1,p2:2,p3:3};
-  const pr=x=>{const v=prioRank[normalizePrio(x.priority)];return v===undefined?9:v;};
-  pending.sort((a,b)=>(pr(a)-pr(b))||(new Date(a.requiredBy)-new Date(b.requiredBy)));
+  const pr=x=>{const v=prioNum(x.priority);return v===undefined?99:v;};
+  pending.sort((a,b)=>((b.urgent?1:0)-(a.urgent?1:0))||(pr(a)-pr(b))||(new Date(a.requiredBy)-new Date(b.requiredBy)));
 
   app.innerHTML=`${demoNote()}
     <div class="pagehead"><div><div class="eyebrow">Creative team · ${byId(currentUser).name}</div><h1>Your board</h1>
@@ -857,6 +933,7 @@ function creativeCard(r,mode){
         acts=`<button class="btn good" onclick="openComplete('${r.id}')">Mark complete</button>`;
         acts+=`<button class="btn sm" onclick="openQuery('${r.id}')">Raise query</button>`;
         if(!dc)acts+=`<button class="btn warn sm" onclick="openDateChange('${r.id}','later')">Ask for more time</button>`;
+        acts+=`<button class="btn sm" onclick="reassignCreative('${r.id}')">Reassign</button>`;
       }
     }
   }
@@ -880,12 +957,53 @@ function creativeCard(r,mode){
 function toggleSel(id){selected.has(id)?selected.delete(id):selected.add(id);render();}
 
 /* ---------------- MANAGER ---------------- */
+function myUrgentSide(){return currentRole==='ecom_manager'?'urgEm':currentRole==='creative_manager'?'urgCm':(currentRole==='admin'?'both':null);}
+function urgentPendingForMe(r){if(r.status!=='urgent_review')return false;const s=myUrgentSide();if(!s)return false;return s==='both'?(r.urgEm!=='ok'||r.urgCm!=='ok'):r[s]!=='ok';}
+function urgentApprove(id){const r=findReq(id);if(r.status!=='urgent_review'){render();return;}
+  const side=myUrgentSide();if(!side){render();return;}
+  if(side==='both'){r.urgEm='ok';r.urgCm='ok';}else r[side]='ok';
+  log(r,currentUser,'approve','Approved the urgent request');
+  if(r.urgEm==='ok'&&r.urgCm==='ok'){
+    r.status='pending';
+    notify(r.raisedBy,currentUser,id,`Your urgent <b>${esc(r.request.slice(0,26))}</b> was approved — now with the creative team`,'approve');
+    PEOPLE.filter(p=>p.role==='creative').forEach(c=>notify(c.id,currentUser,id,`⚡ URGENT approved: <b>${esc(r.request.slice(0,26))}</b> — needed by ${fmtDate(r.requiredBy)}`,'created'));
+    DB.save(r);render();toast('Approved · released','Now in the creative queue, marked URGENT.',null);
+  }else{
+    notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> approved your urgent <b>${esc(r.request.slice(0,26))}</b> — one more manager to go`,'approve');
+    DB.save(r);render();toast('Approved','Waiting on the other manager before it goes to the team.',null);
+  }}
+function urgentDecline(id){const r=findReq(id);if(r.status!=='urgent_review'){render();return;}
+  r.status='declined';r.declineReason='Urgent timeline declined by '+fname(currentUser)+' — please re-raise with a realistic date.';
+  log(r,currentUser,'decline','Declined the urgent request');
+  notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> declined the urgent timeline on <b>${esc(r.request.slice(0,26))}</b> — re-raise with a later date`,'decline');
+  DB.save(r);render();toast('Declined',fname(r.raisedBy)+' notified to re-raise with a realistic date.',null);}
+
+function reassignCreative(id){const r=findReq(id);if(!r||r.assignee!==currentUser)return;
+  const others=PEOPLE.filter(p=>p.role==='creative'&&p.id!==currentUser);
+  if(!others.length){toast('No one to reassign to','You\u2019re the only creative in the team.',null);return;}
+  modal(`Reassign — ${esc(r.request.slice(0,36))}`,`<p class="hint" style="margin:-2px 0 12px">Hand this task to another creative. They\u2019ll take over the deadline as-is.</p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+    ${others.map(p=>`<button class="btn" style="justify-content:flex-start;padding:12px 14px" onclick="doReassign('${id}','${p.id}')"><span class="miniav" style="width:26px;height:26px;font-size:11px;background:${colorFor(p.name)};margin-right:9px">${initials(p.name)}</span>${esc(p.name)}</button>`).join('')}
+    </div>`,`<button class="btn ghost" onclick="closeModal()">Cancel</button>`);}
+function doReassign(id,toId){const r=findReq(id);if(!r||r.assignee!==currentUser){closeModal();render();return;}
+  const from=currentUser;r.assignee=toId;
+  log(r,currentUser,'accept','Reassigned to '+fname(toId));
+  notify(toId,currentUser,id,`<b>${fname(from)}</b> reassigned <b>${esc(r.request.slice(0,26))}</b> to you — due ${fmtDate(r.agreedDeadline||r.requiredBy)}`,'accept');
+  notify(r.raisedBy,currentUser,id,`<b>${esc(r.request.slice(0,26))}</b> is now with <b>${fname(toId)}</b>`,'accept');
+  DB.save(r);closeModal();render();toast('Reassigned',fname(toId)+' now owns this task.',{label:'Ping '+fname(toId),href:waLink(toId,`Handing "${r.request.slice(0,40)}" (${r.id}) to you — due ${fmtDate(r.agreedDeadline||r.requiredBy)}.`)});}
 function decisionsPanel(){
   const all=DB.requests();
+  const urg=all.filter(urgentPendingForMe);
   const dcs=all.filter(r=>{const dc=activeDC(r);return dc&&dcDecider(dc)===currentUser;});
   const prio=all.filter(r=>r.prioritizeReq&&r.prioritizeBy===currentUser);
-  const n=dcs.length+prio.length;
+  const n=urg.length+dcs.length+prio.length;
   let R='';
+  urg.forEach(r=>{const waiting=[]; if(r.urgEm!=='ok'&&firstOf('ecom_manager'))waiting.push('ecom mgr'); if(r.urgCm!=='ok'&&firstOf('creative_manager'))waiting.push('creative mgr');
+    R+=`<div class="reqbox ext"><div class="rh"><span class="tag" style="background:var(--red-soft);color:var(--red)">⚡ Urgent</span><b>${esc(r.request.slice(0,52))}</b></div>
+    <div class="line"><b>${fname(r.raisedBy)}</b> needs this before the ${tatOf(r.type)}-day TAT · <span class="mono">${r.id}</span></div>
+    <div class="line">${esc(r.type||'')} · ${esc(r.platform)} · due <b>${fmtDate(r.requiredBy)}</b></div>
+    <div class="line" style="color:var(--mute)">${esc((r.request||'').slice(0,120))}</div>
+    <div class="actions" style="border-top:0;padding-top:11px;margin-top:6px"><button class="btn good sm" onclick="urgentApprove('${r.id}')">Approve — send to creatives</button><button class="btn danger sm" onclick="urgentDecline('${r.id}')">Decline</button></div></div>`;});
   dcs.forEach(r=>{const dc=activeDC(r);const lbl=dc.dir==='earlier'?'Prepone':'Postpone';const cls=dc.dir==='earlier'?'pre':'ext';const cp=dcCounterparty(r,dc);
     R+=`<div class="reqbox ${cls}"><div class="rh"><span class="tag">${lbl} · escalated</span><b>${esc(r.request.slice(0,52))}</b></div>
     <div class="line"><b>${fname(dc.o.by)}</b> and <b>${cp?fname(cp):'—'}</b> couldn't agree — your call · <span class="mono">${r.id}</span></div>
@@ -895,8 +1013,8 @@ function decisionsPanel(){
   if(prio.length){
     R+=`<div class="reqbox prio"><div class="rh"><span class="tag">Prioritise</span><b>${prio.length} task${prio.length>1?'s':''} sent to you for a priority call</b></div>
     <div class="line" style="margin-bottom:8px">Set the order they should be worked in:</div>
-    ${prio.map(r=>`<div class="prioline"><div class="pl">${esc(r.request.slice(0,44))}<div class="mono">${r.id} · ${r.assignee?fname(r.assignee):'unassigned'} · req. ${fmtDate(r.requiredBy)}</div></div>
-      <div class="prioset"><button class="btn danger sm" onclick="setPrio('${r.id}','p0')">P0</button><button class="btn sm" onclick="setPrio('${r.id}','p1')">P1</button><button class="btn sm" onclick="setPrio('${r.id}','p2')">P2</button><button class="btn sm" onclick="setPrio('${r.id}','p3')">P3</button></div></div>`).join('')}</div>`;}
+    ${prio.map(r=>`<div class="prioline"><div class="pl">${esc(r.request.slice(0,44))}<div class="mono">${r.id} · ${r.assignee?fname(r.assignee):'unassigned'} · req. ${fmtDate(r.requiredBy)}${r.priority?' · '+PRIO_LABEL[normalizePrio(r.priority)]:''}</div></div>
+      <div class="prioset"><button class="btn sm" onclick="openPriority('${r.id}')">Set priority</button><button class="btn sm" onclick="openMgrDate('${r.id}')">Set date</button></div></div>`).join('')}</div>`;}
   return {n,html:n?R:emptyState('All clear','Nothing escalated to you right now.')};
 }
 function viewManager(){
@@ -1205,11 +1323,16 @@ function openRequestForm(editId){
     </div>
     <div class="field" id="fPlatOtherWrap" style="display:${isOther?'block':'none'}"><label>Which platform? <span class="req">*</span></label><input id="fPlatOther" placeholder="Type the platform name" value="${isOther?esc(r.platform):''}"></div>
     <div class="field"><label>Request <span class="req">*</span></label><textarea id="fReq" placeholder="What do you need? e.g. Hero banner for Face Wash on Blinkit brand store…">${r?esc(r.request):''}</textarea></div>
+    <div class="field"><label>Type of request <span class="req">*</span></label>
+      <select id="fType" onchange="updateTatHint()">${['',...REQ_TYPES.map(t=>t.label)].map(l=>l===''?`<option value="" ${r&&r.type?'':'selected'} disabled>Select a type…</option>`:`<option ${r&&r.type===l?'selected':''}>${l}</option>`).join('')}</select>
+      <div class="hint" id="fTatHint"></div>
+    </div>
     <div class="field"><label>NH SKU code(s) <span class="req">*</span></label><input id="fSku" placeholder="e.g. NH-FW-101  (comma-separate for multiple)" value="${r?esc(r.nhSku||''):''}"><div class="hint">One or many — separate with commas.</div></div>
     <div class="two">
-      <div class="field"><label>Required by <span class="req">*</span></label><input type="date" id="fDate" min="${TODAY_STR}" value="${r?r.requiredBy.slice(0,10):d(5).toISOString().slice(0,10)}"></div>
+      <div class="field"><label>Required by <span class="req">*</span></label><input type="date" id="fDate" min="${TODAY_STR}" value="${r?r.requiredBy.slice(0,10):d(5).toISOString().slice(0,10)}" onchange="updateTatHint()"></div>
       <div class="field"><label>Dimensions</label><input id="fDim" placeholder="e.g. 1080×1080, 1200×628" value="${r?esc(r.dimensions):''}"></div>
     </div>
+    <div id="fUrgentNote"></div>
     <div class="field"><label>Sample images <span style="color:var(--mute);font-weight:400">(optional)</span></label>
       <div class="uploader" id="fDrop">
         <input type="file" id="fFiles" multiple accept="image/*" style="display:none" onchange="onSampleFiles(this)">
@@ -1229,30 +1352,53 @@ function openRequestForm(editId){
     drop.ondragover=e=>{e.preventDefault();drop.classList.add('drag');};
     drop.ondragleave=()=>drop.classList.remove('drag');
     drop.ondrop=e=>{e.preventDefault();drop.classList.remove('drag');onSampleFiles({files:e.dataTransfer.files,value:''});};}
+  updateTatHint();
+}
+function updateTatHint(){
+  const ts=document.getElementById('fType'), ds=document.getElementById('fDate');
+  const hint=document.getElementById('fTatHint'), note=document.getElementById('fUrgentNote');
+  if(!ts||!ds||!hint||!note)return;
+  const type=ts.value;
+  if(!type){hint.textContent='Pick a type — each has a minimum turnaround time.';note.innerHTML='';return;}
+  const tat=tatOf(type);
+  hint.innerHTML=`Minimum TAT: <b>${tat} day${tat>1?'s':''}</b> — earliest normal date is ${fmtDate(new Date(startOfToday.getTime()+tat*DAY).toISOString())}.`;
+  if(ds.value && daysUntil(ds.value)<tat){
+    note.innerHTML=`<div class="mbanner" style="background:var(--coral-soft);color:var(--coral);border-color:rgba(198,123,58,.3)">⚡ This is sooner than the ${tat}-day minimum TAT. It will go to <b>your manager and the creative manager for approval first</b>, then to the creative team marked <b>URGENT</b> — not straight to creatives.</div>`;
+  }else note.innerHTML='';
 }
 function submitRequest(editId){
   const g=id=>document.getElementById(id).value;
   const copyReq=document.getElementById('fCopy').classList.contains('on');
   let platform=g('fPlat');
   if(platform==='Other'){const o=g('fPlatOther').trim();if(!o){mErr('Type the platform name for “Other”.');return;}platform=o;}
+  const type=g('fType');
+  if(!type){mErr('Pick a type of request.');return;}
   if(!g('fReq').trim()){mErr('Describe what you need in the Request field.');return;}
   if(!g('fSku').trim()){mErr('Add at least one NH SKU code.');return;}
   if(g('fDate')<TODAY_STR){mErr('Required-by is in the past — pick a future date.');return;}
   if(copyReq){const cl=+g('fChar');if(!cl||cl<1){mErr('Set a character limit for the copy, or turn Copy off.');return;}}
   const skuClean=g('fSku').split(',').map(s=>s.trim()).filter(Boolean).join(', ');
+  const urgent=isUrgent(type,g('fDate'));
   if(editId){const r=findReq(editId);const wasDeclined=r.status==='declined';
-    Object.assign(r,{raisedBy:g('fBy'),platform:platform,nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
+    Object.assign(r,{raisedBy:g('fBy'),platform:platform,type:type,nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
       dimensions:g('fDim'),sampleLink:g('fSample'),attachments:(sampleFiles.length?sampleFiles.slice():r.attachments||[]),copyReq,charLimit:copyReq?(+g('fChar')||null):null,other:g('fOther')});
     if(wasDeclined){r.status='pending';r.assignee=null;r.declineReason=null;log(r,currentUser,'created','Edited & re-raised');}
     else{log(r,currentUser,'created','Updated the request');if(r.assignee)notify(r.assignee,currentUser,r.id,`<b>${fname(currentUser)}</b> updated <b>${esc(r.request.slice(0,30))}</b>`,'query');}
     DB.save(r);closeModal();render();toast(wasDeclined?'Re-raised':'Request updated',wasDeclined?'Back in the creative queue.':'Changes saved'+(r.assignee?' · '+fname(r.assignee)+' notified.':'.'),null);return;}
   const maxN=REQUESTS.reduce((m,r)=>Math.max(m,+r.id.split('-')[1]),1043);
-  const nr={id:'CR-'+(maxN+1),raisedBy:g('fBy'),platform:platform,nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
+  const nr={id:'CR-'+(maxN+1),raisedBy:g('fBy'),platform:platform,type:type,nhSku:skuClean,request:g('fReq'),requiredBy:new Date(g('fDate')).toISOString(),
     sampleLink:g('fSample'),attachments:sampleFiles.slice(),dimensions:g('fDim'),copyReq,charLimit:copyReq?(+g('fChar')||null):null,other:g('fOther'),
-    createdAt:iso(today),priority:null,status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
-    extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
-    activity:[{ts:iso(today),actor:g('fBy'),type:'created',note:'Raised the request'}]};
+    createdAt:iso(today),priority:null,status:urgent?'urgent_review':'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
+    extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,urgent:urgent,urgEm:'',urgCm:'',queries:[],
+    activity:[{ts:iso(today),actor:g('fBy'),type:'created',note:'Raised the request'+(urgent?' (urgent — sooner than TAT)':'')}]};
   REQUESTS.unshift(nr);
+  if(urgent){
+    const em=firstOf('ecom_manager'), cm=firstOf('creative_manager');
+    if(!em)nr.urgEm='ok'; if(!cm)nr.urgCm='ok';           // skip a side if that manager doesn't exist
+    [em,cm].forEach(m=>{if(m)notify(m.id,g('fBy'),nr.id,`⚡ <b>${fname(g('fBy'))}</b> raised an <b>urgent</b> request (before the ${tatOf(type)}-day TAT) — needs your approval: <b>${esc(nr.request.slice(0,26))}</b>`,'esc');});
+    DB.save(nr);closeModal();render();toast('Sent for urgent approval','It goes to your manager and the creative manager first, then to the team as URGENT.',null);
+    return;
+  }
   PEOPLE.filter(p=>p.role==='creative').forEach(c=>notify(c.id,g('fBy'),nr.id,`New request from <b>${fname(g('fBy'))}</b>: <b>${esc(nr.request.slice(0,30))}</b>`,'created'));
   DB.save(nr);closeModal();render();toast('Request sent','It\'s in the creative Pending queue.',null);pingChooser(nr.id);
 }
@@ -1288,6 +1434,76 @@ function openDrawer(){const mine=DB.notifs().filter(n=>n.to===currentUser);const
   DB.notifs().forEach(n=>{if(n.to===currentUser)n.read=true;});if(LIVE)DB.markRead(currentUser);drawer.classList.add('on');renderBell();}
 document.getElementById('bell').onclick=openDrawer;
 document.getElementById('queriesBtn').onclick=openQueriesTracker;
+document.getElementById('trackerBtn').onclick=()=>{if(!currentUser)return;trackerMode=true;attentionMode=false;render();};
+document.getElementById('attnBtn').onclick=()=>{if(!currentUser)return;attentionMode=true;trackerMode=false;render();};
+let trackerMode=false, attentionMode=false;
+function attentionItems(){
+  const all=DB.requests(); const it=[];
+  if(currentRole==='creative'){
+    all.filter(r=>r.status==='pending').forEach(r=>it.push({kind:'newreq',r}));
+    all.filter(r=>{const dc=activeDC(r);return dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser;}).forEach(r=>it.push({kind:'peer',r}));
+  }else if(currentRole==='ecom'){
+    all.filter(r=>r.raisedBy===currentUser&&r.status==='pending_approval').forEach(r=>it.push({kind:'signoff',r}));
+    all.filter(r=>r.raisedBy===currentUser).forEach(r=>r.queries.filter(q=>!q.answer&&q.to===currentUser).forEach(q=>it.push({kind:'query',r,q})));
+    all.filter(r=>{const dc=activeDC(r);return dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser;}).forEach(r=>it.push({kind:'peer',r}));
+  }else{
+    all.filter(urgentPendingForMe).forEach(r=>it.push({kind:'urgent',r}));
+    all.filter(r=>{const dc=activeDC(r);return dc&&dcDecider(dc)===currentUser;}).forEach(r=>it.push({kind:'escdc',r}));
+    all.filter(r=>r.prioritizeReq&&r.prioritizeBy===currentUser).forEach(r=>it.push({kind:'prio',r}));
+  }
+  return it;
+}
+function attnCard(item){
+  const {kind,r,q}=item; const dc=activeDC(r); let acts='';
+  if(kind==='newreq')acts=`<button class="btn good sm" onclick="openAccept('${r.id}')">Accept</button><button class="btn danger sm" onclick="openDecline('${r.id}')">Decline</button>`;
+  else if(kind==='peer')acts=`<button class="btn good sm" onclick="peerApprove('${r.id}')">Approve</button><button class="btn danger sm" onclick="peerDecline('${r.id}')">Decline</button><button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate</button>`;
+  else if(kind==='signoff')acts=`<a class="btn sm" href="https://${r.deliverable}" target="_blank">Review files ↗</a><button class="btn good sm" onclick="approveDone('${r.id}')">Approve &amp; close</button><button class="btn warn sm" onclick="sendBack('${r.id}')">Send back</button>`;
+  else if(kind==='query')acts=`<button class="btn good sm" onclick="answerQuery('${r.id}','${q.id}')">Reply</button>`;
+  else if(kind==='urgent')acts=`<button class="btn good sm" onclick="urgentApprove('${r.id}')">Approve</button><button class="btn danger sm" onclick="urgentDecline('${r.id}')">Decline</button>`;
+  else if(kind==='escdc')acts=`<button class="btn good sm" onclick="mgrApproveDC('${r.id}')">Approve${dc?' · '+fmtDate(dc.o.proposedDate):''}</button><button class="btn danger sm" onclick="mgrDeclineDC('${r.id}')">Decline</button>`;
+  else if(kind==='prio')acts=`<button class="btn sm" onclick="openPriority('${r.id}')">Set priority</button><button class="btn sm" onclick="openMgrDate('${r.id}')">Set date</button>`;
+  return `<div class="card">
+    <div class="card-h"><div class="tt"><div class="rid mono">${r.id} · ${esc(r.platform)}${r.type?' · '+esc(r.type):''}</div><h3>${esc(r.request.length>64?r.request.slice(0,64)+'…':r.request)}</h3>
+    <div class="chips">${r.urgent?'<span class="chip urgent">⚡ URGENT</span>':''}${statusChip(r.status)}${r.priority?prioChip(r.priority):''}</div></div></div>
+    <div class="meta-row"><div class="m"><div class="k">Raised by</div><div class="v">${miniAv(r.raisedBy)}${fname(r.raisedBy)}</div></div>
+      ${r.assignee?`<div class="m"><div class="k">With</div><div class="v">${miniAv(r.assignee)}${fname(r.assignee)}</div></div>`:''}
+      <div class="m"><div class="k">Complete by</div><div class="v ${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</div></div></div>
+    ${kind==='query'?`<div class="qthread" style="margin-top:12px"><div class="qmsg"><span class="who">${fname(q.from)} asked:</span> ${esc(q.text)}</div></div>`:''}
+    ${(kind==='peer'||kind==='escdc')&&dc?`<div class="body-txt"><b>${dcLabel(dc)} to ${fmtDate(dc.o.proposedDate)} — ${fname(dc.o.by)}:</b> ${esc(dc.o.reason)}</div>`:''}
+    <div class="actions">${acts}</div></div>`;
+}
+function renderAttention(){
+  const items=attentionItems();
+  const sections=[['urgent','Urgent requests to approve'],['newreq','New requests to pick up'],['signoff','Deliveries to sign off'],['peer','Date changes needing your call'],['escdc','Escalated date changes'],['query','Queries to answer'],['prio','Prioritise these']];
+  let body='';
+  sections.forEach(([k,label])=>{const g=items.filter(i=>i.kind===k);if(g.length)body+=`<div class="section-t">${label} <span class="ct">${g.length}</span></div>`+g.map(attnCard).join('');});
+  app.innerHTML=`${demoNote()}
+    <div class="pagehead"><div><div class="eyebrow">Your queue</div><h1>Requires your attention</h1>
+    <p class="lede">Everything waiting on you, in one place — accept, approve, reply, or decide.</p></div>
+    <button class="btn" onclick="attentionMode=false;render()"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to my dashboard</button></div>
+    ${items.length?body:emptyState('You\u2019re all caught up','Nothing needs you right now. Nice.')}`;
+}
+function renderTracker(){
+  const rows=DB.requests().filter(r=>['ongoing','completed','pending_approval'].indexOf(r.status)>=0)
+    .slice().sort((a,b)=>new Date(a.agreedDeadline||a.requiredBy)-new Date(b.agreedDeadline||b.requiredBy));
+  app.innerHTML=`${demoNote()}
+    <div class="pagehead"><div><div class="eyebrow">Team tracker</div><h1>Everything in motion</h1>
+    <p class="lede">A live view of all ongoing and completed work — who\u2019s doing what, on which platform, due when, and the final files once delivered.</p></div>
+    <button class="btn" onclick="trackerMode=false;render()"><svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>Back to my dashboard</button></div>
+    ${searchBar()}
+    <div class="tablewrap"><table><thead><tr><th>ID</th><th>Channel</th><th>Type</th><th>Raised by</th><th>Assigned to</th><th>Status</th><th>Complete by</th><th>Files</th></tr></thead>
+    <tbody>${rows.filter(matchesSearch).map(r=>`<tr>
+      <td class="mono" style="color:var(--mute)">${r.id}${r.urgent?' <span class="chip urgent" style="padding:0 5px">⚡</span>':''}</td>
+      <td>${esc(r.platform)}</td>
+      <td style="font-size:11.5px">${esc(r.type||'—')}</td>
+      <td>${fname(r.raisedBy)}</td>
+      <td>${r.assignee?miniAv(r.assignee)+fname(r.assignee):'<span style="color:var(--mute)">—</span>'}</td>
+      <td>${statusChip(r.status)}</td>
+      <td class="${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</td>
+      <td>${r.deliverable?`<a href="https://${r.deliverable}" target="_blank">Open ↗</a>`:'<span style="color:var(--mute)">—</span>'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+  bindSearch();
+}
 function visibleForMe(){
   const all=DB.requests();
   if(currentRole==='admin'||currentRole==='ecom_manager'||currentRole==='creative_manager')return all;
