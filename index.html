@@ -553,6 +553,7 @@ const DB={
     NOTIFS=(data.notifications||[]).map(n=>({id:String(n.id),to:String(n.to),ts:n.ts,read:truthy(n.read),actor:String(n.actor),reqId:String(n.reqId),text:n.text,kind:n.kind}));
     REQUESTS.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     NOTIFS.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    saveCache();
   },
   save(r){ const p=JSON.parse(JSON.stringify(r)); p.attachments=(r.attachments||[]).map(f=>f.name).join(', '); post({action:'saveRequest',request:p}); },
   pushNotif(n){ NOTIFS.unshift(n); post({action:'appendNotif',notif:n}); },
@@ -599,7 +600,7 @@ function dcLabel(dc){return dc.dir==='earlier'?'prepone':'postpone';}
 
 /* ---- state ---- */
 let currentRole='ecom', currentUser=firstOf('ecom').id;
-let creativeTab='pending', ecomFilter='all', searchQuery='';
+let creativeTab='pending', ecomFilter='all', searchQuery='', creativeScope='all';
 let expanded=new Set(), selected=new Set();
 
 function matchesSearch(r){
@@ -886,15 +887,18 @@ function viewEcom(){
 function viewCreative(){
   const all=DB.requests();
   const pending=all.filter(r=>r.status==='pending').filter(matchesSearch);
-  const mine=all.filter(r=>r.assignee===currentUser);
-  const ongoing=mine.filter(r=>r.status==='ongoing'||r.status==='pending_approval').filter(matchesSearch);
-  const done=mine.filter(r=>r.status==='completed').filter(matchesSearch);
+  const ongoingAll=all.filter(r=>r.status==='ongoing'||r.status==='pending_approval');
+  const doneAll=all.filter(r=>r.status==='completed');
+  const ongoing=(creativeScope==='mine'?ongoingAll.filter(r=>r.assignee===currentUser):ongoingAll).filter(matchesSearch);
+  const done=(creativeScope==='mine'?doneAll.filter(r=>r.assignee===currentUser):doneAll).filter(matchesSearch);
   const pr=x=>{const v=prioNum(x.priority);return v===undefined?99:v;};
   pending.sort((a,b)=>((b.urgent?1:0)-(a.urgent?1:0))||(pr(a)-pr(b))||(new Date(a.requiredBy)-new Date(b.requiredBy)));
+  const dsort=(a,b)=>((b.urgent?1:0)-(a.urgent?1:0))||(new Date(a.agreedDeadline||a.requiredBy)-new Date(b.agreedDeadline||b.requiredBy));
+  ongoing.sort(dsort);
 
   app.innerHTML=`${demoNote()}
     <div class="pagehead"><div><div class="eyebrow">Creative team · ${byId(currentUser).name}</div><h1>Your board</h1>
-      <p class="lede">Accept or decline what comes in, work your ongoing list, and mark done once files are on Drive. Need more time or a call on priority? Send it to the manager.</p></div></div>
+      <p class="lede">See the whole team's work in Ongoing, act on what's yours, and pull in a teammate (e.g. for content) when a task needs another pair of hands.</p></div></div>
     ${searchBar()}
     <div class="tabs" id="tabs">
       <button class="tab ${creativeTab==='pending'?'on':''}" data-t="pending">Pending requests<span class="cnt">${pending.length}</span></button>
@@ -904,24 +908,28 @@ function viewCreative(){
     <div id="ctab"></div>`;
   document.getElementById('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{creativeTab=b.dataset.t;selected.clear();render();});
   const box=document.getElementById('ctab');
+  const scopeBar=(tab)=>`<div class="filters"><button class="fchip ${creativeScope==='all'?'on':''}" onclick="creativeScope='all';render()">Whole team${tab==='ongoing'?` · ${ongoingAll.length}`:` · ${doneAll.length}`}</button><button class="fchip ${creativeScope==='mine'?'on':''}" onclick="creativeScope='mine';render()">Just mine${tab==='ongoing'?` · ${ongoingAll.filter(r=>r.assignee===currentUser).length}`:` · ${doneAll.filter(r=>r.assignee===currentUser).length}`}</button></div>`;
   if(creativeTab==='pending'){
     box.innerHTML=pending.length?pending.map(r=>creativeCard(r,'pending')).join(''):emptyState('Queue is clear','No new requests waiting to be picked up.');
   }else if(creativeTab==='ongoing'){
-    box.innerHTML=(ongoing.length?`<p class="hint" style="margin:-4px 0 14px">Tip: tick a few tasks to send the manager a batch and ask which to prioritise.</p>`:'')
-      +(ongoing.length?ongoing.map(r=>creativeCard(r,'ongoing')).join(''):emptyState('Nothing in progress','Accept something from Pending to get going.'));
+    box.innerHTML=scopeBar('ongoing')
+      +(creativeScope==='mine'?`<p class="hint" style="margin:-4px 0 14px">Tip: tick a few of your tasks to ask a manager which to prioritise.</p>`:'')
+      +(ongoing.length?ongoing.map(r=>creativeCard(r,'ongoing')).join(''):emptyState('Nothing here',creativeScope==='mine'?'None of the in-progress tasks are yours right now.':'Nothing in progress across the team.'));
   }else{
-    box.innerHTML=done.length?done.map(r=>creativeCard(r,'done')).join(''):emptyState('Nothing completed yet','Approved deliveries will land here.');
+    box.innerHTML=scopeBar('done')+(done.length?done.map(r=>creativeCard(r,'done')).join(''):emptyState('Nothing completed yet','Approved deliveries will land here.'));
   }
 }
 function creativeCard(r,mode){
-  const selectable=mode==='ongoing'&&r.status==='ongoing';
+  const mineTask=r.assignee===currentUser;
+  const selectable=mode==='ongoing'&&r.status==='ongoing'&&mineTask;
   const on=selected.has(r.id);
+  const subFor=byId(r.raisedBy).role==='creative';   // this is a collaborator sub-task
   let acts='';
   if(mode==='pending'){
     acts=`<button class="btn good" onclick="openAccept('${r.id}')">Accept</button><button class="btn danger" onclick="openDecline('${r.id}')">Decline</button>`;
   }else if(mode==='ongoing'){
     if(r.status==='pending_approval'){
-      acts=`<span style="align-self:center;color:var(--purple);font-size:12.5px;font-weight:600">Delivered — waiting on ${fname(r.raisedBy)} to approve</span><button class="btn sm" onclick="remindApproval('${r.id}')">Nudge ecom</button>`;
+      acts=mineTask?`<span style="align-self:center;color:var(--purple);font-size:12.5px;font-weight:600">Delivered — waiting on ${fname(r.raisedBy)} to approve</span><button class="btn sm" onclick="remindApproval('${r.id}')">Nudge</button>`:`<span style="align-self:center;color:var(--mute);font-size:12.5px">Delivered by ${fname(r.assignee)} — awaiting sign-off</span>`;
     }else{
       const dc=activeDC(r);
       if(dc&&dcIsPeer(dc)&&dcCounterparty(r,dc)===currentUser){
@@ -929,11 +937,14 @@ function creativeCard(r,mode){
         acts+=`<button class="btn good sm" onclick="peerApprove('${r.id}')">Approve</button>`;
         acts+=`<button class="btn danger sm" onclick="peerDecline('${r.id}')">Decline</button>`;
         acts+=`<button class="btn warn sm" onclick="peerEscalate('${r.id}')">Escalate to manager</button>`;
-      }else{
+      }else if(mineTask){
         acts=`<button class="btn good" onclick="openComplete('${r.id}')">Mark complete</button>`;
         acts+=`<button class="btn sm" onclick="openQuery('${r.id}')">Raise query</button>`;
         if(!dc)acts+=`<button class="btn warn sm" onclick="openDateChange('${r.id}','later')">Ask for more time</button>`;
         acts+=`<button class="btn sm" onclick="reassignCreative('${r.id}')">Reassign</button>`;
+        if(!subFor)acts+=`<button class="btn sm" onclick="openAddCollab('${r.id}')">Add collaborator</button>`;
+      }else{
+        acts=`<span style="align-self:center;color:var(--mute);font-size:12.5px">With ${fname(r.assignee)} · view only</span>`;
       }
     }
   }
@@ -941,12 +952,14 @@ function creativeCard(r,mode){
     <div class="card-h">
       ${selectable?`<div class="ckbx ${on?'on':''}" onclick="toggleSel('${r.id}')"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:''}
       <div class="tt"><div class="rid mono">${r.id} · ${r.platform}${r.nhSku?' · '+esc(r.nhSku):''}</div><h3>${esc(r.request.length>60?r.request.slice(0,60)+'…':r.request)}</h3>
-        <div class="chips">${statusChip(r.status)}${prioChip(r.priority)}${r.copyReq?`<span class="chip type">Copy ≤${r.charLimit}</span>`:''}<span class="chip type">${r.dimensions}</span>${flags(r)}</div></div>
+        <div class="chips">${subFor?'<span class="chip flagp">Collab task</span>':''}${statusChip(r.status)}${prioChip(r.priority)}${r.type?`<span class="chip type">${esc(r.type)}</span>`:''}${r.copyReq?`<span class="chip type">Copy ≤${r.charLimit}</span>`:''}${r.dimensions?`<span class="chip type">${esc(r.dimensions)}</span>`:''}${flags(r)}</div></div>
     </div>
     <div class="meta-row">
       <div class="m"><div class="k">Raised by</div><div class="v">${miniAv(r.raisedBy)}${byId(r.raisedBy).name}</div></div>
-      <div class="m"><div class="k">${r.agreedDeadline?'Your deadline':'Required by'}</div><div class="v ${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</div></div>
+      <div class="m"><div class="k">With</div><div class="v">${r.assignee?miniAv(r.assignee)+fname(r.assignee):'—'}</div></div>
+      <div class="m"><div class="k">${r.agreedDeadline?'Deadline':'Required by'}</div><div class="v ${r.status!=='completed'&&isLate(r.agreedDeadline||r.requiredBy)?'late':''}">${fmtDate(r.agreedDeadline||r.requiredBy)}</div></div>
       ${r.sampleLink?`<div class="m"><div class="k">Samples</div><div class="v"><a href="https://${r.sampleLink}" target="_blank">Open ↗</a></div></div>`:''}
+      ${r.deliverable?`<div class="m"><div class="k">Delivered</div><div class="v"><a href="https://${r.deliverable}" target="_blank">Files ↗</a></div></div>`:''}
     </div>
     <div class="body-txt"><b>Brief:</b> ${esc(r.request)}${r.other?` <span style="color:var(--mute)">· ${esc(r.other)}</span>`:''}</div>
     ${queryHTML(r)}
@@ -991,6 +1004,35 @@ function doReassign(id,toId){const r=findReq(id);if(!r||r.assignee!==currentUser
   notify(toId,currentUser,id,`<b>${fname(from)}</b> reassigned <b>${esc(r.request.slice(0,26))}</b> to you — due ${fmtDate(r.agreedDeadline||r.requiredBy)}`,'accept');
   notify(r.raisedBy,currentUser,id,`<b>${esc(r.request.slice(0,26))}</b> is now with <b>${fname(toId)}</b>`,'accept');
   DB.save(r);closeModal();render();toast('Reassigned',fname(toId)+' now owns this task.',{label:'Ping '+fname(toId),href:waLink(toId,`Handing "${r.request.slice(0,40)}" (${r.id}) to you — due ${fmtDate(r.agreedDeadline||r.requiredBy)}.`)});}
+
+/* ---- add a collaborator: creates a linked sub-task for them ---- */
+function openAddCollab(id){const r=findReq(id);if(!r)return;
+  const others=PEOPLE.filter(p=>p.role==='creative'&&p.id!==currentUser);
+  if(!others.length){toast('No one to add','You\u2019re the only creative in the team.',null);return;}
+  const opts=others.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  const def=(r.agreedDeadline||r.requiredBy).slice(0,10);
+  modal(`Add a collaborator — ${esc(r.request.slice(0,32))}`,`<p class="hint" style="margin:-2px 0 12px">Pull in a teammate (e.g. for content). A linked sub-task is created for them; they deliver to you and close it.</p>
+    <div class="field"><label>Who <span class="req">*</span></label><select id="coWho">${opts}</select></div>
+    <div class="field"><label>What do you need from them? <span class="req">*</span></label><textarea id="coWhat" placeholder="e.g. Ad copy for all 6 variants, under 30 chars each"></textarea></div>
+    <div class="field"><label>Need it by</label><input type="date" id="coDate" min="${TODAY_STR}" value="${def}"></div>`,
+    `<button class="btn ghost" onclick="closeModal()">Cancel</button><button class="btn primary" onclick="doAddCollab('${id}')">Create sub-task</button>`);}
+function doAddCollab(id){const r=findReq(id);if(!r)return;
+  const toId=document.getElementById('coWho').value, what=document.getElementById('coWhat').value.trim(), dv=document.getElementById('coDate').value;
+  if(!toId){mErr('Pick a teammate.');return;}
+  if(!what){mErr('Say what you need from them.');return;}
+  const when=dv?new Date(dv).toISOString():(r.agreedDeadline||r.requiredBy);
+  const maxN=REQUESTS.reduce((m,x)=>Math.max(m,+x.id.split('-')[1]),1043);
+  const sub={id:'CR-'+(maxN+1),raisedBy:currentUser,platform:r.platform,type:'Content / Support',nhSku:r.nhSku,
+    request:`Support for ${r.id} — ${what}`,requiredBy:when,sampleLink:r.sampleLink,attachments:[],dimensions:r.dimensions,
+    copyReq:false,charLimit:null,other:`Feeds into ${r.id} (${byId(r.raisedBy).name})`,createdAt:iso(today),priority:r.priority||null,
+    status:'ongoing',assignee:toId,agreedDeadline:when,declineReason:null,deliverable:null,extension:null,prepone:null,
+    prioritizeReq:false,prioritizeBy:null,urgent:r.urgent,urgEm:'',urgCm:'',
+    queries:[],activity:[{ts:iso(today),actor:currentUser,type:'created',note:'Sub-task created for '+fname(toId)+' (feeds '+r.id+')'}]};
+  REQUESTS.unshift(sub);
+  log(r,currentUser,'created','Added '+fname(toId)+' as collaborator ('+sub.id+')');
+  notify(toId,currentUser,sub.id,`<b>${fname(currentUser)}</b> added you to <b>${esc(r.request.slice(0,24))}</b> — needs: ${esc(what.slice(0,40))}`,'created');
+  DB.save(sub);DB.save(r);closeModal();render();
+  toast('Collaborator added',fname(toId)+' has a sub-task ('+sub.id+') to deliver to you.',{label:'Ping '+fname(toId),href:waLink(toId,`Added you to "${r.request.slice(0,36)}" (${r.id}). Need: ${what}. By ${fmtDate(when)}.`)});}
 function decisionsPanel(){
   const all=DB.requests();
   const urg=all.filter(urgentPendingForMe);
@@ -1108,7 +1150,16 @@ function doComplete(id){const r=findReq(id);
   if(r.status!=='ongoing'){closeModal();render();toast('Changed','This task is no longer in progress.',null);return;}
   const link=document.getElementById('delLink').value.trim();
   if(!link){mErr('Paste the Drive link — you can only mark complete once the files are uploaded.');return;}
-  r.status='pending_approval';r.deliverable=link;
+  r.deliverable=link;
+  if(byId(r.raisedBy).role==='creative'){
+    // collaborator sub-task — delivers straight back to the owner, no ecom sign-off
+    r.status='completed';
+    log(r,currentUser,'done','Delivered to '+fname(r.raisedBy)+' · closed');
+    notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> delivered <b>${esc(r.request.slice(0,30))}</b> — files attached`,'done');
+    DB.save(r);closeModal();render();toast('Delivered & closed',fname(r.raisedBy)+' has your files.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Done — "${r.request.slice(0,40)}" (${r.id}): https://${link}`)});
+    return;
+  }
+  r.status='pending_approval';
   log(r,currentUser,'done','Marked complete · uploaded to Drive');
   notify(r.raisedBy,currentUser,id,`<b>${fname(currentUser)}</b> marked <b>${esc(r.request.slice(0,30))}</b> complete — needs your approval`,'done');
   DB.save(r);closeModal();render();toast('Sent for approval',fname(r.raisedBy)+' will review and sign off.',{label:'Ping '+fname(r.raisedBy),href:waLink(r.raisedBy,`Done — "${r.request.slice(0,40)}" (${r.id}): https://${link}. Please review & approve.`)});}
@@ -1628,20 +1679,39 @@ function logout(){
   currentUser=null;
   loginPicker();
 }
+function saveCache(){try{
+  localStorage.setItem('nh_team',JSON.stringify({people:PEOPLE,haspass:HASPASS}));
+  localStorage.setItem('nh_board',JSON.stringify({requests:REQUESTS,notifs:NOTIFS}));
+}catch(e){}}
+function loadFromCache(){try{
+  const t=JSON.parse(localStorage.getItem('nh_team')||'null');
+  if(!t||!Array.isArray(t.people)||!t.people.length)return false;
+  PEOPLE=t.people; HASPASS=t.haspass||{};
+  const b=JSON.parse(localStorage.getItem('nh_board')||'null');
+  if(b){REQUESTS=b.requests||[]; NOTIFS=b.notifs||[];}
+  return true;
+}catch(e){return false;}}
+function startFromState(){
+  let remembered=null; try{remembered=localStorage.getItem(REMEMBER_KEY);}catch(e){}
+  const p=remembered?byId(remembered):null;
+  if(p&&p.id&&PEOPLE.find(x=>x.id===p.id)) grantLogin(p);
+  else loginTeam();
+}
 async function boot(){
   renderHeader();
-  if(!LIVE){ app.innerHTML=screenMsg(
-    `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
-    'One step left','Paste your Apps Script /exec URL into the API_URL line near the top of this file, then re-upload it to GitHub.',''); return; }
+  if(loadFromCache()){
+    // paint instantly from the last-known data, then refresh in the background
+    startFromState();
+    DB.load().then(()=>{ if(currentUser&&PEOPLE.find(p=>p.id===currentUser))render(); }).catch(()=>{});
+    startPoll();
+    return;
+  }
   app.innerHTML=screenMsg(
     `<svg viewBox="0 0 24 24" fill="none" class="spin" style="opacity:1;color:var(--green)"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
     'Loading…','Fetching the latest from your sheet.');
   try{
     await DB.load();
-    let remembered=null; try{remembered=localStorage.getItem(REMEMBER_KEY);}catch(e){}
-    const p=remembered?byId(remembered):null;
-    if(p&&p.id&&PEOPLE.find(x=>x.id===p.id)) grantLogin(p);
-    else loginPicker();
+    startFromState(); startPoll();
   }catch(err){
     app.innerHTML=screenMsg(
       `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
