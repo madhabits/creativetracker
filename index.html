@@ -1635,19 +1635,18 @@ async function boot(){
     startPoll();
     return;
   }
-  app.innerHTML=screenMsg(
-    `<svg viewBox="0 0 24 24" fill="none" class="spin" style="opacity:1;color:var(--green)"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-    'Loading…','Fetching the latest from your sheet.');
-  try{
-    await DB.load();
-    startFromState(); startPoll();
-  }catch(err){
-    app.innerHTML=screenMsg(
-      `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
-      "Couldn't reach the sheet",
-      "Check that API_URL is your deployed /exec URL and the script is deployed with access set to Anyone.",
-      `<button class="btn primary" style="margin-top:14px" onclick="boot()">Try again</button>`);
+  const spinIco=`<svg viewBox="0 0 24 24" fill="none" class="spin" style="opacity:1;color:var(--green)"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  app.innerHTML=screenMsg(spinIco,'Loading…','Fetching the latest from your sheet.');
+  let ok=false;
+  for(let i=0;i<4&&!ok;i++){
+    try{ await DB.load(); ok=true; }
+    catch(e){ if(i<3){ app.innerHTML=screenMsg(spinIco,'Waking the server…','Just a moment — the first open of the day can take a few seconds.'); await new Promise(r=>setTimeout(r,1500)); } }
   }
+  if(ok){ startFromState(); startPoll(); return; }
+  app.innerHTML=screenMsg(
+    `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+    "Couldn't reach the sheet","Give it a few seconds and try once more.",
+    `<button class="btn primary" style="margin-top:14px" onclick="boot()">Try again</button>`);
 }
 let pollTimer=null;
 function startPoll(){
