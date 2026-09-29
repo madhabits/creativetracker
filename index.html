@@ -401,14 +401,7 @@ const AVCOLORS=['#E9AE54','#6FBF9C','#6BA8F0','#B48CE8','#F0894E','#8FD3B6'];
 function colorFor(n){let s=0;for(const c of n)s+=c.charCodeAt(0);return AVCOLORS[s%AVCOLORS.length];}
 function initials(n){return n.split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();}
 
-let PEOPLE=[
-  {id:'u_an',name:'Ananya Rao',role:'ecom',phone:'919000000001'},
-  {id:'u_vk',name:'Vikram Shah',role:'ecom',phone:'919000000002'},
-  {id:'u_ka',name:'Kabir Mehta',role:'creative',phone:'919000000003'},
-  {id:'u_sa',name:'Sana Kapoor',role:'creative',phone:'919000000004'},
-  {id:'u_me',name:'Meera Nair',role:'manager',phone:'919000000005'},
-  {id:'u_ad',name:'Ops Admin',role:'admin',phone:'919000000000'},
-];
+let PEOPLE=[];
 const byId=id=>PEOPLE.find(p=>p.id===id)||{name:'—',role:'',phone:''};
 const firstOf=role=>PEOPLE.find(p=>p.role===role);
 const fname=id=>byId(id).name.split(' ')[0];
@@ -448,73 +441,9 @@ function ymd(dt){return dt.toISOString().slice(0,10);}
 function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 /* ---- seed ---- */
-let REQUESTS=[
-  {id:'CR-1043',raisedBy:'u_an',platform:'Blinkit',nhSku:'NH-FW-101',request:'Face Wash hero banner for the brand store — festive-lite look, highlight ₹99 intro price',
-   requiredBy:iso(d(4)),sampleLink:'drive.google.com/nh-fw-refs',dimensions:'1080×1080, 1200×628',copyReq:true,charLimit:40,
-   other:'Keep logo top-left. Avoid red — clashes with pack.',createdAt:iso(d(-0.3)),
-   priority:null,status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
-   extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
-   activity:[{ts:iso(d(-0.3)),actor:'u_an',type:'created',note:'Raised the request'}]},
+let REQUESTS=[];
 
-  {id:'CR-1042',raisedBy:'u_vk',platform:'Zepto',nhSku:'NH-SH-204, NH-SH-205',request:'Hibiscus Shampoo A+ content — 5 modules (benefits, ingredients, how-to-use, before/after, trust)',
-   requiredBy:iso(d(6)),sampleLink:'',dimensions:'1200×628 ×5',copyReq:true,charLimit:90,other:'Match the new Hibiscus pack shade.',
-   createdAt:iso(d(-0.8)),priority:'high',status:'pending',assignee:null,agreedDeadline:null,declineReason:null,deliverable:null,
-   extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
-   activity:[{ts:iso(d(-0.8)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-0.5)),actor:'u_me',type:'priority',note:'Priority set to High'}]},
-
-  {id:'CR-1041',raisedBy:'u_an',platform:'Instamart',nhSku:'NH-FW-101',request:'Face Wash 15s product video — hook in 2s, show lather + herbal ingredients, end card with offer',
-   requiredBy:iso(d(3)),sampleLink:'drive.google.com/nh-fw-video',dimensions:'1080×1920',copyReq:false,charLimit:null,other:'Under 15s.',
-   createdAt:iso(d(-3)),priority:'med',status:'ongoing',assignee:'u_sa',agreedDeadline:iso(d(3)),declineReason:null,deliverable:null,
-   extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,
-   queries:[{id:'q1',from:'u_sa',to:'u_an',text:'Do we have the licence for the track from the last reel, or should I use royalty-free?',ts:iso(d(-0.5)),answer:null,answeredBy:null}],
-   activity:[{ts:iso(d(-3)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-2.8)),actor:'u_me',type:'priority',note:'Priority set to Medium'},{ts:iso(d(-2.5)),actor:'u_sa',type:'accept',note:'Accepted · deadline 7 Aug'},{ts:iso(d(-0.5)),actor:'u_sa',type:'query',note:'Raised a query for ecom'}]},
-
-  {id:'CR-1040',raisedBy:'u_an',platform:'Instamart',nhSku:'NH-SP-311, NH-SP-312, NH-SP-313',request:'Soap festive combo — 6 static ad creatives, Rakhi theme, warm palette',
-   requiredBy:iso(d(2)),sampleLink:'drive.google.com/nh-soap-festive',dimensions:'1080×1080 ×6',copyReq:true,charLimit:30,other:'Rakhi hooks welcome.',
-   createdAt:iso(d(-1.5)),priority:'high',status:'ongoing',assignee:'u_sa',agreedDeadline:iso(d(2)),declineReason:null,deliverable:null,
-   extension:{by:'u_sa',proposedDate:iso(d(5)),reason:'Two shoots already booked this week — earliest I can deliver 6 polished creatives is 9 Aug.',status:'pending',ts:iso(d(-0.4))},
-   prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
-   activity:[{ts:iso(d(-1.5)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-1.4)),actor:'u_me',type:'priority',note:'Priority set to High'},{ts:iso(d(-1.2)),actor:'u_sa',type:'accept',note:'Accepted · deadline 6 Aug'},{ts:iso(d(-0.4)),actor:'u_sa',type:'esc',note:'Requested extension to 9 Aug'}]},
-
-  {id:'CR-1039',raisedBy:'u_vk',platform:'Amazon',nhSku:'NH-HP-401, NH-HP-402',request:'Herbal Powder listing images v2 — white-bg main + 6 infographic secondaries',
-   requiredBy:iso(d(7)),sampleLink:'',dimensions:'2000×2000 ×7',copyReq:true,charLimit:120,other:'Multani + Neem SKUs.',
-   createdAt:iso(d(-2)),priority:'med',status:'ongoing',assignee:'u_ka',agreedDeadline:iso(d(7)),declineReason:null,deliverable:null,
-   extension:null,prepone:{by:'u_vk',proposedDate:iso(d(4)),reason:'Amazon sale date got pulled forward — need these live by 8 Aug.',status:'pending',ts:iso(d(-0.2))},
-   prioritizeReq:false,prioritizeBy:null,queries:[],
-   activity:[{ts:iso(d(-2)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-1.8)),actor:'u_me',type:'priority',note:'Priority set to Medium'},{ts:iso(d(-1.5)),actor:'u_ka',type:'accept',note:'Accepted · deadline 11 Aug'},{ts:iso(d(-0.2)),actor:'u_vk',type:'esc',note:'Requested prepone to 8 Aug'}]},
-
-  {id:'CR-1038',raisedBy:'u_vk',platform:'Amazon',nhSku:'NH-FP-501',request:'Neem Face Pack listing images — main + 4 secondaries',
-   requiredBy:iso(d(1)),sampleLink:'',dimensions:'2000×2000 ×5',copyReq:false,charLimit:null,other:'',
-   createdAt:iso(d(-4)),priority:'med',status:'pending_approval',assignee:'u_ka',agreedDeadline:iso(d(1)),declineReason:null,
-   deliverable:'drive.google.com/nh-neem-final',extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
-   activity:[{ts:iso(d(-4)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-3.6)),actor:'u_ka',type:'accept',note:'Accepted · deadline 5 Aug'},{ts:iso(d(-0.1)),actor:'u_ka',type:'done',note:'Marked complete · uploaded to Drive'}]},
-
-  {id:'CR-1037',raisedBy:'u_an',platform:'Blinkit',nhSku:'NH-SP-320',request:'Ubtan Soap launch banner',
-   requiredBy:iso(d(-1)),sampleLink:'',dimensions:'1080×1080',copyReq:true,charLimit:35,other:'',
-   createdAt:iso(d(-6)),priority:'med',status:'completed',assignee:'u_ka',agreedDeadline:iso(d(-1)),declineReason:null,
-   deliverable:'drive.google.com/nh-ubtan-final',extension:null,prepone:null,prioritizeReq:false,prioritizeBy:null,queries:[],
-   activity:[{ts:iso(d(-6)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-5.5)),actor:'u_ka',type:'accept',note:'Accepted'},{ts:iso(d(-2)),actor:'u_ka',type:'done',note:'Marked complete · uploaded to Drive'},{ts:iso(d(-1.6)),actor:'u_an',type:'approve',note:'Approved & closed'}]},
-
-  {id:'CR-1036',raisedBy:'u_an',platform:'Zepto',nhSku:'NH-SH-204, NH-SH-210',request:'Shampoo range comparison creative',
-   requiredBy:iso(d(8)),sampleLink:'',dimensions:'1200×628',copyReq:true,charLimit:60,other:'',
-   createdAt:iso(d(-1)),priority:null,status:'ongoing',assignee:'u_ka',agreedDeadline:iso(d(8)),declineReason:null,deliverable:null,
-   extension:null,prepone:null,prioritizeReq:true,prioritizeBy:'u_ka',queries:[],
-   activity:[{ts:iso(d(-1)),actor:'u_an',type:'created',note:'Raised the request'},{ts:iso(d(-0.8)),actor:'u_ka',type:'accept',note:'Accepted'},{ts:iso(d(-0.3)),actor:'u_ka',type:'esc',note:'Asked manager to prioritise'}]},
-
-  {id:'CR-1035',raisedBy:'u_vk',platform:'Blinkit',nhSku:'NH-HP-401',request:'Herbal Powder combo static',
-   requiredBy:iso(d(9)),sampleLink:'',dimensions:'1080×1080',copyReq:false,charLimit:null,other:'',
-   createdAt:iso(d(-1)),priority:null,status:'ongoing',assignee:'u_ka',agreedDeadline:iso(d(9)),declineReason:null,deliverable:null,
-   extension:null,prepone:null,prioritizeReq:true,prioritizeBy:'u_ka',queries:[],
-   activity:[{ts:iso(d(-1)),actor:'u_vk',type:'created',note:'Raised the request'},{ts:iso(d(-0.8)),actor:'u_ka',type:'accept',note:'Accepted'},{ts:iso(d(-0.3)),actor:'u_ka',type:'esc',note:'Asked manager to prioritise'}]},
-];
-
-let NOTIFS=[
-  {id:uid('n'),to:'u_an',ts:iso(d(-0.5)),read:false,actor:'u_sa',reqId:'CR-1041',text:'<b>Sana</b> raised a query on <b>Face Wash video</b>',kind:'query'},
-  {id:uid('n'),to:'u_vk',ts:iso(d(-0.1)),read:false,actor:'u_ka',reqId:'CR-1038',text:'<b>Kabir</b> marked <b>Neem Face Pack images</b> complete — needs your approval',kind:'done'},
-  {id:uid('n'),to:'u_me',ts:iso(d(-0.4)),read:false,actor:'u_sa',reqId:'CR-1040',text:'<b>Sana</b> requested a deadline extension on <b>Soap festive combo</b>',kind:'esc'},
-  {id:uid('n'),to:'u_me',ts:iso(d(-0.2)),read:false,actor:'u_vk',reqId:'CR-1039',text:'<b>Vikram</b> requested a prepone on <b>Herbal Powder images</b>',kind:'esc'},
-  {id:uid('n'),to:'u_me',ts:iso(d(-0.3)),read:false,actor:'u_ka',reqId:'CR-1036',text:'<b>Kabir</b> asked you to prioritise <b>2 tasks</b>',kind:'prioritize'},
-];
+let NOTIFS=[];
 
 /* ---- DB: static GitHub page <-> Google Sheet.
    Reads use JSONP; writes use a no-cors POST. Each browser gets all rows and
@@ -524,7 +453,7 @@ function loadJSONP(extra){
   return new Promise((resolve,reject)=>{
     const cb='__nh_cb_'+Date.now()+Math.floor(Math.random()*1000);
     const s=document.createElement('script');
-    const timer=setTimeout(()=>{cleanup();reject(new Error('timeout'));},15000);
+    const timer=setTimeout(()=>{cleanup();reject(new Error('timeout'));},30000);
     function cleanup(){clearTimeout(timer);delete window[cb];if(s.parentNode)s.remove();}
     window[cb]=data=>{cleanup();resolve(data);};
     s.onerror=()=>{cleanup();reject(new Error('load failed'));};
@@ -599,7 +528,7 @@ function applyDC(r,dc){dc.o.status='approved';r.requiredBy=dc.o.proposedDate;r.a
 function dcLabel(dc){return dc.dir==='earlier'?'prepone':'postpone';}
 
 /* ---- state ---- */
-let currentRole='ecom', currentUser=firstOf('ecom').id;
+let currentRole=null, currentUser=null;
 let creativeTab='pending', ecomFilter='all', searchQuery='', creativeScope='all';
 let expanded=new Set(), selected=new Set();
 
@@ -1688,7 +1617,7 @@ function loadFromCache(){try{
   if(!t||!Array.isArray(t.people)||!t.people.length)return false;
   PEOPLE=t.people; HASPASS=t.haspass||{};
   const b=JSON.parse(localStorage.getItem('nh_board')||'null');
-  if(b){REQUESTS=b.requests||[]; NOTIFS=b.notifs||[];}
+  REQUESTS=(b&&b.requests)||[]; NOTIFS=(b&&b.notifs)||[];
   return true;
 }catch(e){return false;}}
 function startFromState(){
