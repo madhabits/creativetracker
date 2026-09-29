@@ -358,24 +358,12 @@
   <button class="iconbtn" id="queriesBtn" title="All queries">
     <svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
   </button>
-  <button class="iconbtn" id="bell" title="Inbox">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 19a2 2 0 0 0 4 0" stroke="currentColor" stroke-width="1.5"/></svg>
-    <span class="badge" id="bellCount" style="display:none">0</span>
-  </button>
   <div class="whoami" id="whoami"></div>
 </header>
 
 <div class="wrap" id="app"></div>
 
 <div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
-
-<div class="drawer" id="drawer">
-  <div class="drawer-h">
-    <h3><svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z" stroke="#E9AE54" stroke-width="1.5" stroke-linejoin="round"/></svg> Inbox</h3>
-    <button class="iconbtn" id="drawerClose" style="width:32px;height:32px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
-  </div>
-  <div class="drawer-b" id="drawerBody"></div>
-</div>
 
 <div class="toasts" id="toasts"></div>
 
@@ -469,8 +457,18 @@ async function sha256(str){
   return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 let HASPASS={}; // id -> whether this person has set a password yet
+let boardLoaded=false;
 const DB={
   requests:()=>REQUESTS, notifs:()=>NOTIFS,
+  async loadTeam(){
+    const data=await loadJSONP('action=team');
+    if(!data||!data.ok)throw new Error('Bad response');
+    if(Array.isArray(data.team)&&data.team.length){
+      PEOPLE=data.team.map(p=>({id:String(p.id),name:p.name,role:p.role,phone:String(p.phone),email:p.email?String(p.email):''}));
+      HASPASS={}; data.team.forEach(p=>{HASPASS[String(p.id)]=!!p.hasPass;});
+      try{localStorage.setItem('nh_team',JSON.stringify({people:PEOPLE,haspass:HASPASS}));}catch(e){}
+    }
+  },
   async load(){
     const data=await loadJSONP();
     if(!data||!data.ok)throw new Error('Bad response');
@@ -482,11 +480,11 @@ const DB={
     NOTIFS=(data.notifications||[]).map(n=>({id:String(n.id),to:String(n.to),ts:n.ts,read:truthy(n.read),actor:String(n.actor),reqId:String(n.reqId),text:n.text,kind:n.kind}));
     REQUESTS.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     NOTIFS.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+    boardLoaded=true;
     saveCache();
   },
   save(r){ const p=JSON.parse(JSON.stringify(r)); p.attachments=(r.attachments||[]).map(f=>f.name).join(', '); post({action:'saveRequest',request:p}); },
-  pushNotif(n){ NOTIFS.unshift(n); post({action:'appendNotif',notif:n}); },
-  markRead(userId){ post({action:'markRead',userId}); },
+  pushNotif(n){}, markRead(userId){},
   setPass(id,hash){ HASPASS[String(id)]=true; post({action:'setPass',id:String(id),passHash:hash}); },
   async verifyPass(id,hash){ const d=await loadJSONP('action=login&id='+encodeURIComponent(id)+'&hash='+hash); return !!(d&&d.ok); }
 };
@@ -508,7 +506,7 @@ function normalizeReq(r){
 }
 
 function log(r,actor,type,note){r.activity.push({ts:iso(today),actor,type,note});}
-function notify(to,actor,reqId,text,kind){DB.pushNotif({id:uid('n'),to,ts:iso(today),read:false,actor,reqId,text,kind});}
+function notify(to,actor,reqId,text,kind){/* notifications removed — WhatsApp/Email + attention queue cover this */}
 function waLink(id,msg){return 'https://wa.me/'+byId(id).phone+'?text='+encodeURIComponent(msg);}
 function emailLink(id,subject,body){const e=byId(id).email;return e?('mailto:'+e+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body)):null;}
 function emailBtn(id,subject,body,label){const h=emailLink(id,subject,body);return h?`<a class="btn sm" target="_blank" href="${h}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>${label||'Email'}</a>`:'';}
@@ -557,13 +555,13 @@ function mErr(msg){const mb=modalEl.querySelector('.modal-b');if(!mb)return;let 
 const app=document.getElementById('app');
 function render(){
   renderHeader();
-  if(attentionMode){renderAttention();renderBell();return;}
-  if(trackerMode){renderTracker();renderBell();return;}
+  if(attentionMode){renderAttention();return;}
+  if(trackerMode){renderTracker();return;}
   if(currentRole==='ecom'||currentRole==='ecom_manager')viewEcom();
   else if(currentRole==='creative')viewCreative();
   else if(currentRole==='creative_manager')viewManager();
   else viewAdmin();
-  renderBell(); renderSelbar(); bindSearch();
+  renderSelbar(); bindSearch();
 }
 function renderHeader(){
   const u=byId(currentUser);
@@ -1406,13 +1404,8 @@ function closeModal(){scrim.classList.remove('on');}
 scrim.onclick=e=>{if(e.target===scrim)closeModal();};
 
 const drawer=document.getElementById('drawer');
-function renderBell(){const unread=DB.notifs().filter(n=>n.to===currentUser&&!n.read).length;const b=document.getElementById('bellCount');if(unread){b.style.display='grid';b.textContent=unread;}else b.style.display='none';}
-function openDrawer(){const mine=DB.notifs().filter(n=>n.to===currentUser);const body=document.getElementById('drawerBody');
-  const tone={query:'var(--purple)',esc:'var(--coral)',done:'var(--sage)',accept:'var(--gold)',approve:'var(--sage)',decline:'var(--red)',answer:'var(--purple)',created:'var(--blue)',priority:'var(--gold)',prioritize:'var(--purple)'};
-  body.innerHTML=mine.length?mine.map(n=>{const r=findReq(n.reqId);const c=tone[n.kind]||'var(--gold)';
-    return `<div class="notif ${n.read?'':'unread'}"><div class="ni" style="background:${c}22;color:${c}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/></svg></div><div class="nx"><div class="txt">${n.text}</div><div class="tm">${r?r.id+' · ':''}${ago(n.ts)}</div></div></div>`;}).join(''):`<div class="empty" style="padding:60px 20px"><h4>Inbox zero</h4><p>Nothing needs you right now.</p></div>`;
-  DB.notifs().forEach(n=>{if(n.to===currentUser)n.read=true;});if(LIVE)DB.markRead(currentUser);drawer.classList.add('on');renderBell();}
-document.getElementById('bell').onclick=openDrawer;
+function renderBell(){}
+function openDrawer(){}
 document.getElementById('queriesBtn').onclick=openQueriesTracker;
 document.getElementById('trackerBtn').onclick=()=>{if(!currentUser)return;trackerMode=true;attentionMode=false;render();};
 document.getElementById('attnBtn').onclick=()=>{if(!currentUser)return;attentionMode=true;trackerMode=false;render();};
@@ -1505,7 +1498,6 @@ function openQueriesTracker(){
     </div>`).join(''):`<div class="empty" style="padding:30px 10px"><h4>No queries</h4><p>Nothing to track here yet.</p></div>`;
   modal('All queries'+(open?' · '+open+' open':''),body,`<button class="btn primary" onclick="closeModal()">Close</button>`);
 }
-document.getElementById('drawerClose').onclick=()=>drawer.classList.remove('on');
 
 function toast(title,msg,wa){const wrap=document.getElementById('toasts');const el=document.createElement('div');el.className='toast';
   el.innerHTML=`<div class="ti2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="tt2"><b>${title}</b><p>${msg}</p>${wa?`<div class="row"><a class="btn wa sm" href="${wa.href}" target="_blank"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1-.4-.1-.9-.3-1.6-.6-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 1.9c.1.1.1.3 0 .5l-.4.5c-.2.2-.3.4-.2.6.1.2.6 1 1.3 1.6.9.8 1.6 1 1.8 1.1.2.1.4.1.5-.1l.6-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.5.3.1.2.1.7-.1 1.3Z"/></svg>${wa.label}</a></div>`:''}</div><button class="iconbtn" style="width:26px;height:26px;border:0;background:transparent" onclick="this.closest('.toast').remove()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>`;
@@ -1601,6 +1593,7 @@ function grantLogin(p){
   try{localStorage.setItem(REMEMBER_KEY,p.id);}catch(e){}
   expanded.clear();selected.clear();creativeTab='pending';ecomFilter='all';
   render(); startPoll();
+  if(!boardLoaded){ DB.load().then(()=>render()).catch(()=>{}); }   // pull the full board now that they're in
 }
 function logout(){
   try{localStorage.removeItem(REMEMBER_KEY);}catch(e){}
@@ -1636,23 +1629,27 @@ async function boot(){
     return;
   }
   const spinIco=`<svg viewBox="0 0 24 24" fill="none" class="spin" style="opacity:1;color:var(--green)"><path d="M20 11a8 8 0 1 0-.6 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M20 5v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  app.innerHTML=screenMsg(spinIco,'Loading…','Fetching the latest from your sheet.');
+  app.innerHTML=screenMsg(spinIco,'Loading…','Getting your sign-in ready.');
   let ok=false;
   for(let i=0;i<4&&!ok;i++){
-    try{ await DB.load(); ok=true; }
+    try{ await DB.loadTeam(); ok=true; }
     catch(e){ if(i<3){ app.innerHTML=screenMsg(spinIco,'Waking the server…','Just a moment — the first open of the day can take a few seconds.'); await new Promise(r=>setTimeout(r,1500)); } }
   }
-  if(ok){ startFromState(); startPoll(); return; }
-  app.innerHTML=screenMsg(
-    `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
-    "Couldn't reach the sheet","Give it a few seconds and try once more.",
-    `<button class="btn primary" style="margin-top:14px" onclick="boot()">Try again</button>`);
+  if(!ok){
+    app.innerHTML=screenMsg(
+      `<svg viewBox="0 0 24 24" fill="none" style="opacity:1;color:var(--coral)"><path d="M12 8v5m0 3h.01M12 3l9 16H3L12 3Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+      "Couldn't reach the sheet","Give it a few seconds and try once more.",
+      `<button class="btn primary" style="margin-top:14px" onclick="boot()">Try again</button>`);
+    return;
+  }
+  startFromState(); startPoll();
+  DB.load().then(()=>{ if(currentUser&&PEOPLE.find(p=>p.id===currentUser))render(); }).catch(()=>{});
 }
 let pollTimer=null;
 function startPoll(){
   if(pollTimer)return;
   pollTimer=setInterval(async()=>{
-    if(scrim.classList.contains('on')||drawer.classList.contains('on'))return;
+    if(scrim.classList.contains('on'))return;
     const ae=document.activeElement; if(ae&&/INPUT|TEXTAREA|SELECT/.test(ae.tagName))return;
     try{await DB.load(); if(currentUser&&PEOPLE.find(p=>p.id===currentUser))render();}catch(e){}
   },60000);
